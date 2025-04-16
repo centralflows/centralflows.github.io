@@ -48,6 +48,39 @@
             height: auto;
             display: block;
         }
+        .figure {
+            width: 60%;
+            margin: 32px auto;
+        }
+        .figure img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .caption {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+        .intro-text {
+            text-align: left;
+            font-size: 18px;
+            margin-top: 32px;
+            line-height: 1.6;
+        }
+        .highlights {
+            list-style-type: disc;
+            margin-left: 24px;
+            margin-top: 16px;
+            margin-bottom: 32px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .highlights li {
+            margin-bottom: 12px;
+        }
         .links {
             text-align: center;
             margin-top: 24px;
@@ -133,6 +166,41 @@
     <div class="gif-container">
         <img src="https://jmcohen.github.io/images/overview.gif" alt="Central Flows Overview Animation">
     </div>
+    <div class="caption">
+        A vision transformer is trained on a subset of CIFAR-10 using gradient descent. The central flow (black) accurately matches the trajectory of gradient descent.
+    </div>
+
+    <!-- <p class="intro-text">
+        Neural networks are trained using optimization algorithms.  Yet, the theory of optimization does not play a role in the modern practice of deep learning.  Why?
+     </p> -->
+
+    <p class="intro-text">
+        This work takes a step towards a <strong>theory of optimization in deep learning</strong>. 
+        Traditional theories of optimization cannot describe the dynamics of optimization in deep learning, even in the simple setting of deterministic (i.e. full-batch) training.
+        The challenge is that optimizers typically operate in a complex oscillatory regime termed the <a href="https://arxiv.org/abs/2103.00065">edge of stability.</a>
+        In this work, we develop theory that can describe the dynamics of optimization in this regime.
+     </p>
+
+     <p class="intro-text">
+        Our key insight is that while the <em>exact</em> dynamics of an oscillatory optimizer are difficult to analyze, the <em>time-averaged</em> (i.e. locally smoothed) dynamics are much easier to understand.
+        We characterize these dynamics with a <em>central flow</em>: a differential equation that directly models the time-averaged trajectory of an optimizer, as illustrated in the following cartoon.
+     </p>
+
+     <div class="figure">
+        <img src="images/fig1.jpg", alt="Central flow cartoon">
+    </div>
+    <div class="caption">
+        In this cartoon, gradient descent (blue) takes an oscillatory path through weight space.  The central flow (black) is a smooth curve that characterizes this trajectory.
+    </div>
+
+    <!-- <p class="intro-text">
+        Here are some highlights of our results:
+    </p>
+    
+    <ul class="highlights">
+        <li>We give the <strong>first analysis of gradient descent</strong> that captures the algorithm's typical dynamics in deep learning.
+        <li>This analysis explains why deep learning loss behave as they do, and makes precise how the learning rate hyperparameter affects the optimization process.</li>
+    </ul> -->
 
 </body>
 </html>
