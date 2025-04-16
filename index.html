@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central Flows</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #000;
+        }
+        h1 {
+            font-size: 42px;
+            text-align: center;
+            margin-bottom: 32px;
+            font-weight: normal;
+            line-height: 1.4;
+        }
+        .authors {
+            text-align: center;
+            margin-bottom: 32px;
+            font-size: 22px;
+        }
+        .primary-authors {
+            margin-bottom: 8px;
+        }
+        .author-name {
+            margin: 0 12px;
+        }
+        .authors div:not(.equal-note) {
+            margin-bottom: 8px;
+        }
+        .equal-note {
+            font-size: 16px;
+            margin-top: 20px;
+            color: #444;
+        }
+        .gif-container {
+            width: 100%;
+        }
+        .gif-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .links {
+            text-align: center;
+            margin-top: 24px;
+            margin-bottom: 48px;
+            font-size: 20px;
+        }
+        .links a {
+            margin: 0 16px;
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            background: #f5f5f5;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            color: #000;
+        }
+        .links a:hover {
+            background: #e0e0e0;
+        }
+        .links i {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+        a:not(.links a) {
+            color: #4285f4;
+            text-decoration: none;
+        }
+        a:not(.links a):hover {
+            color: #76a7f6;
+        }
+        .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blue);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.btn:hover { background: #2563EB; }
+
+        @media (max-width: 600px) {
+            body {
+                margin: 40px auto;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            .authors {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Understanding optimization in deep learning with central flows</h1>
+    
+    <div class="authors">
+        <div class="primary-authors">
+            <span class="author-name"><a href="https://jmcohen.github.io">Jeremy Cohen*</a></span>
+            <span class="author-name"><a href="https://web.math.princeton.edu/~ad27/">Alex Damian*</a></span>
+        </div>
+        <div>
+            <span class="author-name"><a href="https://www.cs.cmu.edu/~atalwalk/">Ameet Talwalkar</a></span>
+            <span class="author-name"><a href="https://zicokolter.com">J. Zico Kolter</a></span>
+            <span class="author-name"><a href="https://jasondlee88.github.io/">Jason D. Lee</a></span>
+        </div>
+        <div class="equal-note">
+            *Alex and Jeremy contributed equally; author order determined by coin flip
+        </div>
+    </div>
+
+    <div class="links">
+        <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a>
+        <a href="https://github.com/locuslab/central_flows">💻 Code</a>
+    </div>
+    
+    <div class="gif-container">
+        <img src="https://jmcohen.github.io/images/overview.gif" alt="Central Flows Overview Animation">
+    </div>
+
+</body>
+</html>
