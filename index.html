@@ -53,16 +53,6 @@
     </style>
 </head>
 <body>
-    <nav class="top-nav">
-        <a href="index.html" class="active">Intro</a>
-        <span class="separator">|</span>
-        <a href="part1.html">Part I</a>
-        <span class="separator">|</span>
-        <a href="part2.html">Part II</a>
-        <span class="separator">|</span>
-        <a href="part3.html">Part III</a>
-    </nav>
-
     <h1>Understanding optimization in deep learning with central flows</h1>
     
     <div class="authors">
@@ -80,11 +70,21 @@
         </div>
     </div>
 
+    <nav class="top-nav">
+        <a href="index.html" class="active">Intro</a>
+        <span class="separator">|</span>
+        <a href="part1.html">Part I</a>
+        <span class="separator">|</span>
+        <a href="part2.html">Part II</a>
+        <span class="separator">|</span>
+        <a href="part3.html">Part III</a>
+    </nav>
+    
     <div class="links">
         <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a>
         <a href="https://github.com/locuslab/central_flows">💻 Code</a>
     </div>
-    
+
     <div class="gif-container">
         <img src="https://jmcohen.github.io/images/overview.gif" alt="Central Flows Overview Animation">
     </div>
@@ -92,19 +92,19 @@
         A vision transformer is trained on a subset of CIFAR-10 using gradient descent. The central flow (black) accurately matches the trajectory of gradient descent.
     </div>
 
-    <!-- <p class="intro-text">
+    <!-- <p class="body-text">
         Neural networks are trained using optimization algorithms.  Yet, the theory of optimization does not play a role in the modern practice of deep learning.  Why?
      </p> -->
 
-    <p class="intro-text">
+    <p class="body-text">
         This work takes a step towards a <strong>theory of optimization in deep learning</strong>. 
         Traditional theories of optimization cannot describe the dynamics of optimization in deep learning, even in the simple setting of deterministic (i.e. full-batch) training.
         The challenge is that optimizers typically operate in a complex oscillatory regime termed the <a href="https://arxiv.org/abs/2103.00065">edge of stability.</a>
         In this work, we develop theory that can describe the dynamics of optimization in this regime.
      </p>
 
-     <p class="intro-text">
-        Our key insight is that while the <em>exact</em> dynamics of an oscillatory optimizer are difficult to analyze, the <em>time-averaged</em> (i.e. locally smoothed) dynamics are much easier to understand.
+     <p class="body-text">
+        Our key insight is that while the <em>exact</em> dynamics of an oscillatory optimizer may be challenging to analyze, the <em>time-averaged</em> (i.e. locally smoothed) dynamics are often much easier to understand.
         We characterize these dynamics with a <em>central flow</em>: a differential equation that directly models the time-averaged trajectory of an optimizer, as illustrated in the following cartoon.
      </p>
 
@@ -115,7 +115,7 @@
         In this cartoon, gradient descent (blue) takes an oscillatory path through weight space. The central flow (black) is a smooth curve that characterizes this trajectory.
     </div>
 
-    <!-- <p class="intro-text">
+    <!-- <p class="body-text">
         Here are some highlights of our results:
     </p>
     
