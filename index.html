@@ -52,9 +52,21 @@
         }
     </style>
 </head>
-<body>
+<body>    
+    <nav class="top-nav">
+        <a href="index.html" class="active">Introduction</a>
+        <span class="separator">|</span>
+        <a href="part1.html">Part I</a>
+        <span class="separator">|</span>
+        <a href="part2.html">Part II</a>
+        <span class="separator">|</span>
+        <a href="part3.html">Part III</a>
+        <span class="separator">|</span>
+        <a href="conclusion.html">Conclusion</a>
+    </nav>
+
     <h1>Understanding optimization in deep learning with central flows</h1>
-    
+
     <div class="authors">
         <div class="primary-authors">
             <span class="author-name"><a href="https://jmcohen.github.io">Jeremy Cohen*</a></span>
@@ -70,16 +82,6 @@
         </div>
     </div>
 
-    <nav class="top-nav">
-        <a href="index.html" class="active">Intro</a>
-        <span class="separator">|</span>
-        <a href="part1.html">Part I</a>
-        <span class="separator">|</span>
-        <a href="part2.html">Part II</a>
-        <span class="separator">|</span>
-        <a href="part3.html">Part III</a>
-    </nav>
-    
     <div class="links">
         <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a>
         <a href="https://github.com/locuslab/central_flows">💻 Code</a>
@@ -92,9 +94,9 @@
         A vision transformer is trained on a subset of CIFAR-10 using gradient descent. The central flow (black) accurately matches the trajectory of gradient descent.
     </div>
 
-    <!-- <p class="body-text">
-        Neural networks are trained using optimization algorithms.  Yet, the theory of optimization does not play a role in the modern practice of deep learning.  Why?
-     </p> -->
+    <p class="body-text">
+        This is the companion website for the paper <a href="https://arxiv.org/abs/2410.24206">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025.
+     </p>
 
     <p class="body-text">
         This work takes a step towards a <strong>theory of optimization in deep learning</strong>. 
@@ -109,20 +111,23 @@
      </p>
 
      <div class="figure">
-        <img src="images/fig1.jpg", alt="Central flow cartoon">
+        <img src="media/fig1.png", alt="Central flow cartoon">
     </div>
     <div class="caption">
         In this cartoon, gradient descent (blue) takes an oscillatory path through weight space. The central flow (black) is a smooth curve that characterizes this trajectory.
     </div>
 
-    <!-- <p class="body-text">
-        Here are some highlights of our results:
+    <p class="body-text">
+        This site is organized as follows (paralleling different sections of the paper):
+        <ul>
+            <li>
+                In <a href="part1.html">Part I</a>, we introduce the central flows framework with an analysis of <b>gradient descent</b>, the simplest optimizer.
+            </li>
+            <li> In <a href="part2.html">Part II</a>, we examine a simple adaptive optimizer, <b>Scalar RMSProp</b>.</li>
+            <li>In <a href="part3.html">Part III</a>, we analyze <b>RMSProp</b>, i.e. Adam without momentum</li>
+            <li>Finally, in the <a href="conclusion.html">Conclusion</a>, we review why central flows are a useful tool for understanding optimization in deep learning.</li>
+        </ul>
     </p>
-    
-    <ul class="highlights">
-        <li>We give the <strong>first analysis of gradient descent</strong> that captures the algorithm's typical dynamics in deep learning.
-        <li>This analysis explains why deep learning loss behave as they do, and makes precise how the learning rate hyperparameter affects the optimization process.</li>
-    </ul> -->
 
 </body>
 </html>

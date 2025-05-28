@@ -7,24 +7,130 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="js/mathjax-config.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="js/video-controls.js"></script>
 </head>
 <body>
-    <h1>Part III: how does RMSProp work?</h1>
-
     <nav class="top-nav">
-        <a href="index.html">Intro</a>
+        <a href="index.html">Introduction</a>
         <span class="separator">|</span>
         <a href="part1.html">Part I</a>
         <span class="separator">|</span>
         <a href="part2.html">Part II</a>
         <span class="separator">|</span>
         <a href="part3.html" class="active">Part III</a>
+        <span class="separator">|</span>
+        <a href="conclusion.html">Conclusion</a>
     </nav>
 
+    <h1>Part III: how does RMSProp work?</h1>
+
     <p class="body-text">
-        Content coming soon...
+        Let us now examine RMSProp:
+        \[
+            \nu_{t} = \beta_2 \, \nu_{t-1} + (1-\beta_2) \nabla L(w_t)^{\odot 2}, \quad \quad w_{t+1} = w_t - \frac{\eta}{\sqrt{\nu_{t}} }\odot \nabla L(w_t)
+        \]
     </p>
 
+    <div class="figure">
+        <div class="video-container">
+            <video width="100%"">
+                <source src="media/rmsprop-intuition.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">Caption.</div>
+    </div>
+    <p class="body-text">
+        The dynamics revolve around the effective sharpness, defined as the largest eigenvalue of the effective Hessian:
+        \[
+            S_{\text{eff}}(w, \nu) := \lambda_{\max} \left( \text{diag}(\nu)^{-1/2} \; \nabla^2 L(w_t) \right)
+        \]
+    </p>
+    <div class="figure">
+        <div class="video-container">
+            <video width="100%" style="width: 80%; display: block; margin: 0 auto;">
+                <source src="media/rmsprop-eos.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">Caption.</div>
+    </div>
+    <p class="body-text">
+        \[
+        \underbrace{\mathbb{E}[\nabla L(w_t)^{\odot 2}]}_{\color{red}{\substack{\text{time-average of} \\ \text{ squared gradient}}}}
+        \approx \underbrace{\nabla L(\overline{w}_t)^{\odot 2}}_{\color{red}{\substack{\text{squared gradient at} \\ \text{time-averaged iterate}}}} + \underbrace{\frac{4\nu}{\eta^2} \odot \text{diag}[\mathbb{E}[\delta_t \delta_t^T]]}_{\color{red}{\substack{\text{contribution from oscillations}}}}
+        \]
+    </p>
+
+    <p class="body-text">
+        \[
+            \begin{align}
+                \frac{dw}{dt} = -\frac{\eta}{\sqrt{\nu}} \odot \left[\underbrace{\nabla L(w) + \tfrac{1}{2} \nabla \langle \Sigma(t), H(w) \rangle}_{\color{red} \text{time-average of gradient} }\right], \quad
+                \frac{d\nu}{dt} = \frac{1-\beta_2}{\beta_2} \left[\underbrace{\nabla L(w)^{\odot 2} + \frac{4\nu}{\eta^2} \odot \text{diag}[\Sigma(t)]}_{\color{red} \text{time-average of squared gradient} } - \nu \right ].
+            \end{align}
+        \]
+    </p>
+
+
+    <div class="figure">
+        <div class="video-container">
+            <video width="100%" style="width: 80%; display: block; margin: 0 auto;">
+                <source src="media/rmsprop-centralflow.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">Caption.</div>
+    </div>
+
+    <div class="figure">
+        <div class="video-container">
+            <video width="100%"">
+                <source src="media/rmsprop-predict-sigma.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">Caption.</div>
+    </div>
+
+
+    <div class="figure">
+        <div class="video-container">
+            <video width="100%"">
+                <source src="media/rmsprop-central-flow-nu.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">Caption.</div>
+    </div>
+
+
+    <div class="figure">
+        <img src="media/stationary-nu-convergence.png" style="width:90%; display: block; margin: 0 auto;" alt="Alt text">
+        <div class="caption">Caption.</div>
+    </div>
+
+    <p class="body-text"></p>
+        \[
+        \begin{align}
+        \overline{P}(w) := \operatorname*{argmin}_{\substack{P \text{ diagonal}, \; P \succeq 0}} \ \text{trace}(P) + \tfrac{1}{\eta^2} \underbrace{\| \nabla L(w)\|^2_{P^{-1}}}_{\text{optimization speed}} \quad \text{such that} \quad \underbrace{H(w) \preceq 2P}_{\text{local stability}}.
+        \end{align}
+        \]
+    </p>
+
+    <p class="body-text"></p>
+        \[
+        \begin{align}
+        \hat{P}(w) := \operatorname*{argmin}_{\substack{P \text{ diagonal}, \; P \succeq 0}} \ \text{trace}(P) \quad \text{such that} \quad \underbrace{H(w) \preceq 2P}_{\text{local stability}}.
+        \end{align}
+        \]
+    </p>
+    
 </body>
 </html> 

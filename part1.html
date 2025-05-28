@@ -7,20 +7,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="js/mathjax-config.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="js/video-controls.js"></script>
 </head>
 <body>
-    <h1>Part I: how does gradient descent work?</h1>
-
     <nav class="top-nav">
-        <a href="index.html">Intro</a>
+        <a href="index.html">Introduction</a>
         <span class="separator">|</span>
         <a href="part1.html" class="active">Part I</a>
         <span class="separator">|</span>
         <a href="part2.html">Part II</a>
         <span class="separator">|</span>
         <a href="part3.html">Part III</a>
+        <span class="separator">|</span>
+        <a href="conclusion.html">Conclusion</a>
     </nav>
+
+    <h1>Part I: how does gradient descent work?</h1>
 
     <!-- <div class="figure">
         <img src="training/animate/results/quadratic2.gif" alt="Quadratic optimization animation">
@@ -51,7 +55,7 @@
 
     <div class="figure">
         <div class="video-container" style="width: 60%; display: block; margin: 0 auto;">
-            <video width="100%" id="video-quadratic">
+            <video width="100%">
                 <source src="media/quadratic.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -67,7 +71,7 @@
 
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
-            <video width="100%" id="video-multi">
+            <video width="100%">
                 <source src="media/multi2.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -115,7 +119,7 @@
 
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="mainVideo">
+            <video width="100%">
                 <source src="media/progressive-sharpening.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -136,7 +140,7 @@
 
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="mainVideo2">
+            <video width="100%">
                 <source src="media/blowup.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -157,7 +161,7 @@
     </p>
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="mainVideo3">
+            <video width="100%">
                 <source src="media/stabilization.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -175,7 +179,7 @@
     </p>
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="mainVideo4">
+            <video width="100%">
                 <source src="media/eos.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -191,7 +195,7 @@
     </p>
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="mainVideo5">
+            <video width="100%">
                 <source src="media/smaller-lr.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -278,7 +282,7 @@
     </p>
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="video-onecycle">
+            <video width="100%">
                 <source src="media/onecycle.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -298,7 +302,7 @@
     </p>
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="video-eos-multiple">
+            <video width="100%">
                 <source src="media/eos-multiple.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -333,7 +337,7 @@
     </p>
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="video-gradientflow">
+            <video width="100%">
                 <source src="media/gradientflow.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -347,7 +351,7 @@
     </p>
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="video-centralflow">
+            <video width="100%">
                 <source src="media/centralflow.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -444,7 +448,7 @@
     </p>
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="video-centralflow-one-unstable">
+            <video width="100%">
                 <source src="media/central-flow-one-unstable.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -516,7 +520,7 @@
     </p>
     <div class="figure">
         <div class="video-container" style="width: 80%; display: block; margin: 0 auto;">
-            <video width="100%" id="video-centralflow-multi-unstable">
+            <video width="100%">
                 <source src="media/centralflow-multi-unstable.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -529,7 +533,7 @@
     </p>
     <div class="figure">
         <div class="video-container">
-            <video width="100%" id="video-predict-sigma">
+            <video width="100%">
                 <source src="media/predict-sigma.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -542,7 +546,7 @@
     </p>
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
-            <video width="100%" id="video-loss-raw">
+            <video width="100%">
                 <source src="media/loss-raw.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -555,7 +559,7 @@
     </p>
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
-            <video width="100%" id="video-loss-central">
+            <video width="100%">
                 <source src="media/loss-central-flow.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -583,7 +587,7 @@
     </p>
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
-            <video width="100%" id="video-loss-predicted">
+            <video width="100%">
                 <source src="media/loss-predicted.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -591,35 +595,5 @@
         </div>
         <div class="caption">The quantity \(L(w) + \tfrac{1}{\eta} \text{tr}(\Sigma(t))\) (dashed black line) accurately predicts the time-averaged train loss along the gradient descent trajectory.</div>
     </div>
-    <script>
-        // Add event listeners to all videos using event delegation
-        document.addEventListener('DOMContentLoaded', function() {
-            const videos = document.querySelectorAll('video');
-            
-            videos.forEach(function(video) {
-                const overlay = video.parentElement.querySelector('.video-overlay');
-                
-                video.addEventListener('click', function() {
-                    if (this.paused) {
-                        this.play();
-                    } else {
-                        this.pause();
-                    }
-                });
-                
-                video.addEventListener('play', function() {
-                    overlay.classList.add('hidden');
-                });
-                
-                video.addEventListener('pause', function() {
-                    overlay.classList.remove('hidden');
-                });
-                
-                video.addEventListener('ended', function() {
-                    overlay.classList.remove('hidden');
-                });
-            });
-        });
-    </script>
 </body>
 </html> 
