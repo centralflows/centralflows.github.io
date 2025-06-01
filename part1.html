@@ -31,15 +31,15 @@
     </div> -->
 
     <p class="body-text">
-        Consider the simplest optimization algorithm, deterministic gradient descent:
+        The simplest optimization algorithm is deterministic gradient descent:
     </p>
 
     <div style="text-align: center; margin: 24px 0; font-size: 20px;">
-        \[w_{t+1} = w_t - \eta \, \nabla L(w_t).\]
+        \[w_{t+1} = w_t - \eta \, \nabla L(w_t). \tag{gradient descent}\]  
     </div>
 
     <p class="body-text">
-        Traditional analyses of gradient descent cannot capture the typical dynamics of gradient descent in deep learning.  We'll first explain why, and then we'll present a new analysis of gradient descent that <em>does</em> apply in deep learning.
+        Perhaps surprisingly, traditional analyses of gradient descent cannot capture the typical dynamics of gradient descent in deep learning.  We'll first explain why, and then we'll present a new analysis of gradient descent that <em>does</em> apply in deep learning.
     </p>
 
     <p class="body-text">
@@ -84,7 +84,7 @@
 
     <p class="body-text">
         Ok, that's quadratics, but what about deep learning objectives?  Well, on an arbitrary deep learning objective \(L(w)\), we can always take a quadratic Taylor approximation around our current location in weight space.
-        It's reasonable to think that the dynamics of gradient descent on this quadratic function might resemble the dynamics of gradient descent on the real neural objective.
+        It's reasonable to think that the dynamics of gradient descent on this quadratic function might resemble the short-term dynamics of gradient descent on the real neural objective.
         As we've seen, the dynamics of gradient descent on this quadratic are controlled by the largest eigenvalue of the Hessian matrix \(H(w)\), which we will call the <em>sharpness</em> \(S(w)\):
         \[S(w) := \lambda_1(H(w)).\]
         Namely, if \(S(w) > 2/\eta\), we know that gradient descent on the quadratic Taylor approximation would oscillate and blow up along the top Hessian eigenvector(s).
@@ -98,7 +98,7 @@
         perhaps gradient descent stays inside the stable region throughout training, as depicted in the following cartoon:
     </p>
 
-    <div class="figure">
+    <div class="figure" id="expectation-figure">
         <img src="media/expectation-small.png" style="width:40%; display: block; margin: 0 auto;" alt="Traditional optimization theory suggests gradient descent stays in the stable region">
         <div class="caption">The traditional perspective is that gradient descent remains throughout training inside the "stable region", i.e. the subset of weight space where \(S(w) \le 2/\eta\),  visualized here as a gray blob.</div>
     </div>
@@ -131,8 +131,8 @@
     <p class="body-text">
         You can see that the sharpness \(S(w)\) rises until it reaches the threshold \(2/\eta\).
         This means that gradient descent has left the stable region.
-        At this point, we know that gradient descent would diverge if it were run on the local quadratic Taylor approximation to the training objective --- specifically, it would oscillate and blow up along the top Hessian eigenvector.
-        But, will this happen on the real objective?  Let's see.
+        At this point, we know that gradient descent would diverge if it were run on the local quadratic Taylor approximation to the training objective, as there is now a direction that is "too sharp" for the learning rate \(\eta\).
+        But, what will happen on the real objective?  Let's see.
     </p>
     <p class="body-text">
         For the next few iterations of training, we'll plot the train loss and sharpness (as before), but also the displacement of the iterate along the top Hessian eigenvector, i.e. the quantity that is predicted to oscillate.
@@ -150,7 +150,7 @@
     </div>
 
     <p class="body-text">
-        As you can see, gradient descent does indeed oscillate with growing magnitude along the top Hessian eigenvector --- just as a quadratic Taylor approximation would predict.
+        As you can see, gradient descent does indeed oscillate with growing magnitude along the top Hessian eigenvector, just as a quadratic Taylor approximation would predict.
         These oscillations eventually grow large enough that the train loss starts to go <em>up</em> instead of <em>down</em>.
     </p>
     <p class="body-text">
@@ -208,15 +208,23 @@
     </p>
     <div class="figure">
         <img src="media/reality-small.png" style="width:40%; display: block; margin: 0 auto;" alt="Traditional optimization theory suggests gradient descent stays in the stable region">
-        <div class="caption">Gradient descent dynamically remains inside the stable region, depicted here as a gray blob.</div>
+        <div class="caption">Whereas the <a href="#expectation-figure">traditional picture</a> is that gradient descent stays entirely within the stable region, in reality gradient descent is tending to leave the stable region, but is <em>dynamically steering</em> itself back inside.</div>
     </div>
     <p class="body-text">
-        We call this behavior training at the <em>edge of stability</em> (EOS).  [Note: say something like: this is not some phenemonon that you have to look hard to find, it is the typical behavior of gradient descent in deep learning]
+        We call this behavior training at the <em>edge of stability</em> (EOS).
+        You will see these dynamics if you take any standard deep learning setup and switch the optimizer to deterministic gradient descent.
+        This is not some "phenomenon" that you have to go searching for to find &mdash; it is just the typical behavior of gradient descent in deep learning.
     </p>
-    <p class="body-text">Several years ago, one of us (Jeremy) wrote a paper demonstrating that these EOS dynamics occur across a variety of deep learning architectures and tasks.  The paper posed the question: how does gradient descent converge in deep learning, if not for any reason given in the optimization literature?
     <p class="body-text">
-        In response, another one of us (Alex) co-wrote a paper showing that the key to understanding these surprising dynamics is to consider a <em>third-order</em> Taylor expansion of the loss.  This is one order higher than is normally done when analyzing gradient descent.
-        A third-order Taylor expansion reveals the key ingredient missing from traditional theory:
+        Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> which demonstrated that these EOS dynamics occur across a variety of deep learning architectures and tasks, and posed the question:
+    </p>
+    <div class="boxed-text">
+        How does gradient descent converge in deep learning, if not for any reason given in the optimization literature?
+    </div>
+    <p class="body-text">
+        In response, the other of us (Alex) co-wrote a follow-up <a href="https://arxiv.org/abs/2209.15594">paper</a> explaining these surprising dynamics.
+        This paper showed that the key to understanding the EOS dynamics is to consider a <em>third-order</em> Taylor expansion of the objective, which is one order higher than is normally used when analyzing gradient descent.
+        A third-order Taylor expansion reveals the key ingredient missing from traditional optimization theory:
     </p>
     <div class="boxed-text">
         Oscillations along the top Hessian eigenvector automatically trigger reduction of the top Hessian eigenvalue.
@@ -273,9 +281,9 @@
         Similarly, the <em>gradient</em> of this curvature is the <em>gradient</em> of the sharpness.
     </p>
     <p class="body-text">
-        Thus, when gradient descent is oscillating along the top Hessian eigenvector with magnitude \(x\), the gradient contains a term \( \frac{1}{2} x^2 \nabla S(\overline{w}) \), where \(\nabla S(\overline{w})\) is the gradient of the sharpness.
-        As a result, each negative gradient step on the loss implicitly takes a negative gradient step on the <em>sharpness</em> of the loss, with the "step size" \(\frac{1}{2} x^2 \).
-        Thus, <em>oscillations automatically reduce sharpness</em>, and the strength of this effect is proportional to the squared magnitude of the oscillation.
+        Thus, when gradient descent is oscillating along the top Hessian eigenvector with magnitude \(x\), the gradient picks up a term \( \frac{1}{2} x^2 \nabla S(\overline{w}) \) which points in the direction of gradient of the sharpness, \(\nabla S(\overline{w})\).
+        As a result, each negative gradient step on the loss implicitly takes a negative gradient step on the <em>sharpness</em> of the loss, with the "step size" \(\frac{1}{2} \eta x^2 \).
+        Thus, <em>oscillations automatically reduce sharpness</em>, and the strength of this effect is proportional to the squared magnitude of the oscillation \( x^2 \).
     </p>
     <p class="body-text">
         Equipped with this new insight, we can finally understand the behavior of gradient descent that we previously observed:
@@ -296,9 +304,27 @@
         This acts to decrease the sharpness, pushing gradient descent back into the stable region, after which point the oscillations shrink.
     </p>
     <p class="body-text">
-        When there is one eigenvalue at the edge of stability, the dynamics consist of consecutive cycles like this where the sharpness first rises above, then falls below, the value \(2/\eta\).
-        But there can also be more than one eigenvalue at the edge of stability.
-        We'll now show the same trajectory as before, but plotting the top four eigenvalues rather than just the largest one.
+        In effect, gradient descent has an in-built <a href="https://en.wikipedia.org/wiki/Negative_feedback">negative feedback mechanism</a> for automatically regulating the curvature along its trajectory: when the sharpness \(S(w)\) gets too high, gradient descent oscillates; but the precise effect of these oscillations is to reduce ... the sharpness \(S(w)\)!
+        This negative feedback mechanism is responsible for the successful convergence of gradient descent in deep learning at practical learning rates.
+    </p>
+    <p class="body-text">
+        In the special case where there is exactly one eigenvalue at the edge of stability, the EOS dynamics consist of consecutive cycles of the kind we just saw, where the sharpness first rises above, then falls below, the value \(2/\eta\).
+    </p>
+    <div class="figure">
+        <div class="video-container">
+            <video width="100%">
+                <source src="media/eos-one-unstable.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">With exactly one eigenvalue at the edge of stability, the dynamics consist of consecutive cycles.</div>
+    </div>
+    <p class="body-text">
+        However, it is typical for more than one eigenvalue to eventually reach the edge of stability.
+        The dynamics with multiple eigenvalues at EOS are more complex, and may be <a href="https://en.wikipedia.org/wiki/Chaos_theory">chaotic</a> in the technical sense.
+        With \(k\) eigenvalues at the edge of stability, gradient descent oscillates within the span of the corresponding \(k\) eigenvectors, and these oscilations cause all \(k\) eigenvalues to stay 
+        dynamically regulated around the value \(2/\eta\).
     </p>
     <div class="figure">
         <div class="video-container">
@@ -308,24 +334,13 @@
             </video>
             <div class="video-overlay">Click to play</div>
         </div>
-        <div class="caption">We show the top four eigenvalues of the Hessian.  Over the duration of training shown, the first three successively enter EOS.</div>
+        <div class="caption">        At first, there is just one eigenvalue (blue) at the edge of stability.  Then, shortly after step 2000, the second eigenvalue (orange) enters the edge of stability.
+            Then, shortly before step 3000, the third eigenvalue (green) enters the edge of stability.  Thereafter, there are three eigenvalues at the edge of stability.</div>
     </div>
     <p class="body-text">
-        At first, there is just one eigenvalue (blue) at the edge of stability.  Then, shortly after step 2000, the second eigenvalue (orange) enters the edge of stability.
-        Then, shortly before step 3000, the third eigenvalue (green) enters the edge of stability.  Thereafter, there are three eigenvalues at the edge of stability.
-    </p>
-    <p class="body-text">
-        When there are \(k\) eigenvalues at the edge of stability, gradient descent oscillates within the span of the corresponding \(k\) eigenvectors, causing all \(k\) eigenvalues to stay 
-        dynamically regulated around the value \(2/\eta\).
-    </p>
-    <p class="body-text">
-        Whereas the traditional theory says that gradient descent converges because the curvature is "already" small, the reality is that gradient descent possesses an inbuilt <b>negative feedback mechanism</b> which <em>keeps</em> the curvature small.
-        Understanding this negative feedback mechanism requires Taylor expanding to third order and modeling the mutual interactions between the oscillations and the curvature.
-    </p>
-    <p class="body-text">
-        While these dynamics are challenging to analyze, the key insight of our new paper is that understanding these dynamics in fine-grained detail may not be necessary.
+        While these dynamics are challenging to analyze, the key insight of our <a href="https://arxiv.org/abs/2410.24206"></a>new paper</a> is that understanding the EOS dynamics in fine-grained detail may not be necessary.
         Rather, we argue that the more important question is: what <em>macroscopic</em> path does gradient descent take through weight space?
-        To characterize this path, we will derive a differential equation called a <em>central flow</em>.
+        We will characterize this path by deriving a differential equation called a <em>central flow</em>.
     </p>
     <p class="body-text">
         The usual continuous-time approximation to gradient descent is the <em>gradient flow</em>:
@@ -333,7 +348,7 @@
         \frac{dw}{dt} = - \eta \, \nabla L(w).
     \]
     Gradient descent roughly follows the gradient flow <em>before</em> reaching the edge of stability. 
-    But <em>after</em> reaching EOS, gradient descent splits off from gradient flow and takes a different path through weight space.
+    But <em>after</em> reaching EOS, gradient descent splits off from gradient flow and takes a different path through weight space, as shown in the following animation:
     </p>
     <div class="figure">
         <div class="video-container">
@@ -346,7 +361,7 @@
         <div class="caption">Gradient descent (blue) approximately follows gradient flow (red) before reaching the edge of stability, but splits off afterwards.</div>
     </div>
     <p class="body-text">
-        Our <em>central flow</em>, by contrast, characterizes the trajectory of gradient descent even at the edge of stability.
+        Our <em>central flow</em>, by contrast, is a differential equation that characterizes the macroscopic trajectory of gradient descent even at the edge of stability.
         The central flow is depicted by a black dashed line in the following animation:
     </p>
     <div class="figure">
@@ -360,7 +375,7 @@
         <div class="caption">The central flow (black) approximates gradient descent (blue) even at the edge of stability.</div>
     </div>
     <p class="body-text">
-        The central flow is intended to model the time-averaged (i.e. locally smoothed) trajectory of gradient descent, as illustrated in the following cartoon:
+        The central flow models the <em>time-averaged</em> (i.e. locally smoothed) trajectory of gradient descent, as illustrated in the following cartoon:
     </p>
     <p class="body-text">
         <div class="figure" style="width: 60%; display: block; margin: 0 auto;">
@@ -369,27 +384,34 @@
         </div>
     </p>
     <p class="body-text">
-        We'll derive the central flow using informal mathematical reasoning, and we'll show empirically that the flow matches the trajectory of gradient descent.
+        We'll derive the central flow using informal mathematical reasoning, and we will validate this flow empirically.
+        Essentially, our logic proceeds as follows: (1) we will assume that the time-averaged trajectory of gradient descent can be captured by a differential equation; 
+        (2) we will argue that only one differential equation makes sense (the central flow); and finally, (3) we will show empirically that this central flow does indeed match the long-term trajectory of gradient descent in a variety of deep learning settings.
     </p>
     <p class="body-text">
-        We start with the special case where only one eigenvalue is at the edge of stability.
-        Since gradient descent oscillates along the top Hessian eigenvector, we model the trajectory as follows:
+        Rigorously establishing that gradient descent follows the central flow is an important open problem that is beyond the scope of our paper.
+        While our derivation is informal, we stress that it will yield highly accurate, nontrivial numerical predictions about the optimization of real neural networks.
+    </p>
+    <p class="body-text">
+        Let's start our derivation by considering the special case where only one eigenvalue is at the edge of stability.
+        The central flow \(w(t)\) will model the time-averaged trajectory of gradient descent.
+        Since gradient descent oscillates along the top Hessian eigenvector \(u_t\), we model each iterate as:
         \[
         \underset{\color{red} \text{iterate}}{w_t} = \underset{\color{red} \begin{array}{c}  \text{time-averaged} \\[-4pt] \text{iterate} \end{array} }{w(t)} + \underset{\color{red} \begin{array}{c} \text{perturbation along} \\[-4pt] \text{top eigenvector} \end{array} }{x_t \, u_t}
     \]
     </p>
     <p class="body-text">
-        Therefore, the gradient at the iterate is:
+        Therefore, by Taylor expansion, the gradient at the iterate is:
         \[
-            \underset{\color{red} \begin{array}{c} \text{gradient at} \\[-4pt] \text{iterate} \end{array}}{\nabla L(w_t)} = \underset{ \color{red} \begin{array}{c} \text{gradient at time-} \\[-4pt] \text{averaged iterate} \end{array}}{\nabla L(w(t))} + \underset{\color{red} \text{oscillation}}{x_t S(w_t) u_t} + \underset{\color{red} \text{sharpness reduction}}{\tfrac{1}{2} x_t^2 \nabla S(w(t))}
+            \underset{\color{red} \begin{array}{c} \text{gradient at} \\[-4pt] \text{iterate} \end{array}}{\nabla L(w_t)} \approx \underset{ \color{red} \begin{array}{c} \text{gradient at time-} \\[-4pt] \text{averaged iterate} \end{array}}{\nabla L(w(t))} + \underset{\color{red} \text{oscillation}}{x_t S(w(t)) u_t} + \underset{\color{red} \text{sharpness reduction}}{\tfrac{1}{2} x_t^2 \nabla S(w(t))}
         \]
     </p>
     <p class="body-text">
         Therefore, if we abuse notation and use \(\mathbb{E}\) to denote "averages over time", then the "time-averaged" gradient is:
             \[
-            \underset{\color{red} \begin{array}{c} \text{time-averaged} \\[-4pt] \text{gradient} \end{array}}{\mathbb{E}[\nabla L(w_t)]} =
+            \underset{\color{red} \begin{array}{c} \text{time-averaged} \\[-4pt] \text{gradient} \end{array}}{\mathbb{E}[\nabla L(w_t)]} \approx
                  \underset{ \color{red} \begin{array}{c} \text{gradient at time-} \\[-4pt] \text{averaged iterate} \end{array} }{\nabla L(w(t))}
-                + \underset{\color{red} \text{0 because } \mathbb{E}[x_t] = 0 \text{ }}{\color{red}{\cancel{\color{black} \mathbb{E}[x_t] \, S(w_t) u_t}}}
+                + \underset{\color{red} \text{0 because } \mathbb{E}[x_t] = 0 \text{ }}{\color{red}{\cancel{\color{black} \mathbb{E}[x_t] \, S(w(t)) u_t}}}
                 + \underset{\color{red} \text{implicit sharpness penalty}}{\frac{1}{2} \mathbb{E} [x_t^2] \, \nabla S(w(t))}
         \]
     </p>
@@ -397,54 +419,63 @@
         That is, the time-averaged gradient equals the gradient at the time-averaged iterate, plus a term proportional to the gradient of the sharpness.
         The strength of the latter term is proportional to \(\mathbb{E} [x_t^2]\), the time-average of the squared magnitude of the oscillations, or in other words,
         the variance of the oscillations.
-        Based on this calculation, we make the ansatz that the time-averaged dynamics of gradient descent at the edge of stability
-        can be captured by an ODE that follows this time-averaged gradient:
-        \[
-            \frac{dw}{dt} = - \eta \, \left[ \nabla L(w) + \underbrace{\frac{1}{2} \sigma^2(t) \nabla S(w)}_{\color{red} \text{sharpness penalty}} \right],
-        \]
     </p>
     <p class="body-text">
-        where \(\sigma(t)\) models the "instantaneous variance" of the oscillations at step \(t\).
+        Based on this calculation, we make the ansatz that when there is one eigenvalue at the edge of stability, the time-averaged dynamics of gradient descent
+        can be captured by a differential equation that follows this time-averaged gradient:
+        \[\begin{align}
+            \frac{dw}{dt} = - \eta \, \left[ \nabla L(w) + \underbrace{\frac{1}{2} \sigma^2(t) \nabla S(w)}_{\color{red} \text{sharpness penalty}} \right], \label{eq:central-flow-ansatz-one-unstable}
+        \end{align}\]
+    </p>
+    <p class="body-text">
+        where \(\sigma^2(t)\) models the "instantaneous variance" of the oscillations at step \(t\).
         Intuitively, this flow averages out the oscillations themselves, while retaining their lasting effect on the trajectory,
-        which takes the form of the implicit sharpness regularizer.
+        which takes the form of the sharpness penalty.
     </p>
     <p class="body-text">
-        How do we set \(\sigma(t)\)?  We will argue that there is only one possible value that  \(\sigma(t)\) can take.
+        To set \(\sigma^2(t)\), we will argue that there is only one possible value that it can take.
         Recall that at EOS, the sharpness \(S(w)\) is equilibrating at \(2/\eta\).
-        This means that the sharpness is invariant over time.
-        Indeed, this is the equilibrium conditition that is being automatically maintained by the dynamics.
-        It turns out that there is a unique \(\sigma(t)\) compatible with this equilibrium condition.
+        That is, the sharpness is invariant over time.
+        This is the equilibrium condition that is being automatically maintained by the dynamics.
+        Therefore, we will enforce that under the central flow, the time derivative of the sharpness is zero.
+        It turns out that there is a unique \(\sigma^2(t)\) compatible with this condition.
     </p>
     <p class="body-text">
-        By the chain rule, the time derivative of the sharpness under our flow is given by:
+        By the chain rule, the time derivative of the sharpness under the flow \eqref{eq:central-flow-ansatz-one-unstable} is given by:
         \[
         \begin{align}
-        \frac{dS}{dt} &= \left \langle \nabla S(w), \frac{dw}{dt} \right \rangle \tag{chain rule} \\
-                    &= \left \langle \nabla S(w), - \eta \, \left[ \nabla L(w) + \frac{1}{2} \sigma^2(t) \nabla S(w) \right] \right \rangle \tag{ansatz for $\tfrac{dw}{dt}$} \\
+        \frac{dS}{dt} &= \left \langle \nabla S(w), \frac{dw}{dt} \right \rangle \tag{chain rule} \\[0.4em]
+                    &= \left \langle \nabla S(w), - \eta \, \left[ \nabla L(w) + \frac{1}{2} \sigma^2(t) \nabla S(w) \right] \right \rangle \tag{ansatz for $\tfrac{dw}{dt}$} \\[0.4em]
                     &= \underset{\color{red} \begin{array}{c} \text{time derivative of sharpness} \\[-4pt] \text{under gradient flow} \end{array}}{\left \langle \nabla S(w), - \eta \nabla L(w) \right \rangle} -
-                      \underset{\color{red} \begin{array}{c} \text{sharpness reduction} \\[-4pt] \text{from oscillations} \end{array} }{\tfrac{1}{2} \eta \, \sigma^2(t) \| \nabla S(w) \|^2}.  \tag{simplify}
+                      \underset{\color{red} \begin{array}{c} \text{sharpness reduction} \\[-4pt] \text{from oscillations} \end{array} }{\tfrac{1}{2} \eta \, \sigma^2(t) \| \nabla S(w) \|^2}.  \tag{simplify} 
         \end{align}
         \]
     </p>
     <p class="body-text">
-        Thus, we see that \(\frac{dS}{dt}\) is affine in \(\sigma^2(t)\). There is a unique value of \(\sigma^2(t)\) that results in \(\frac{dS}{dt} = 0\), which is given by:
+        The first term is the time derivative of the sharpness under gradient flow, which will be positive (as otherwise we would have left the edge of stability).
+        The second term is the sharpness reduction from the oscillations.
+        There is a unique value of \(\sigma^2(t)\) for which the second term cancels the first term to yield \(\frac{dS}{dt} = 0\), and this is given by:
     </p>
     <div class="boxed-text">
         <p class="body-text">
         \[
-        \sigma^2(t) = \frac{2 \langle -\nabla L(w), \nabla S(w) \rangle }{\| \nabla S(w)\|^2}.
+            \begin{align}
+                \sigma^2(t) = \frac{2 \langle -\nabla L(w), \nabla S(w) \rangle }{\| \nabla S(w)\|^2}. \label{eq:sigma-squared-one-unstable}
+            \end{align}
         \]
         </p>
     </div>
     <p class="body-text">
-        The central flow is defined as our ansatz, with this particular value of \(\sigma^2(t)\) plugged in:
-        \[
+        The central flow is defined as equation \eqref{eq:central-flow-ansatz-one-unstable}, with this particular value of \(\sigma^2(t)\) plugged in:
+        \[  
+        \begin{align}
             \frac{dw}{dt} = - \eta \, \left[ \nabla L(w) + \frac{1}{2} \sigma^2(t) \nabla S(w) \right] \quad \text{where}\quad
-            \sigma^2(t) = \frac{2 \langle -\nabla L(w), \nabla S(w) \rangle }{\| \nabla S(w)\|^2}.
+            \sigma^2(t) = \frac{2 \langle -\nabla L(w), \nabla S(w) \rangle }{\| \nabla S(w)\|^2}. \label{eq:central-flow-one-unstable}
+        \end{align}
         \]
     </p>
     <p class="body-text">
-        Let's check out this central flow in action.  Starting at the point in training where the sharpness first reaches \(2/\eta\), we'll run both gradient descent and this flow simultaneously.
+        Let's check out this central flow in action.  Starting at the point in training where the sharpness first reaches \(2/\eta\), we'll run both gradient descent and the flow \eqref{eq:central-flow-one-unstable} simultaneously.
     </p>
     <div class="figure">
         <div class="video-container">
@@ -458,51 +489,51 @@
     </div>
     <p class="body-text">
         The left pane shows that the sharpness cycles around \(2/\eta\) under gradient descent, and stays fixed at exactly \(2/\eta\) under the central flow.
-        This is not that interesting, since we set up the flow specifically to have this property.
+        This is not particularly interesting, since we constructed the flow specifically to have this property.
         What is more interesting are the other two panes.
     </p>
     <p class="body-text">
-        The middle pane compares the actual vs. predicted variance of the oscillations.
-        In black, we show the central flow's \(\sigma(t)\); in blue, we show the squared magnitude of the displacement between gradient descent
-        and the central flow along the top Hessian eigenvector.  In thick blue we compute the time-average of the blue line, i.e. the empirical variance of the oscillations.
-        See that the central flow accurately predicts this value.
+        The middle pane compares the real vs. predicted variance of the oscillations.
+        In black, we show the central flow's \(\sigma^2(t)\), our prediction for the variance of the oscillations.
+        In light blue, we show the squared magnitude of the displacement between gradient descent
+        and the central flow along the top Hessian eigenvector, and in thick blue we compute the empirical time-average of this quantity, i.e. the empirical variance of the oscillations.
+        Observe that our prediction, formula \eqref{eq:sigma-squared-one-unstable}, accurately predicts the empirical variance of the oscillations.
     </p>
     <p class="body-text">
-        On the right, we show the Euclidean distance in weight space between gradient descent and the central flow.
+        The right pane shows the Euclidean distance in weight space between gradient descent and the central flow.
         Observe that this distance stays small over time, indicating that the central flow accurately tracks the trajectory of gradient descent over the long term.
-        In contrast, we can see that the <em>gradient flow</em> (red in the below plot) takes a very different trajectory:
+        In contrast, the <em>gradient flow</em> (red in the below plot) takes a very different trajectory:
     </p>
     <div class="figure">
         <img src="media/central-flow-single-action-gf.png">
         <div class="caption">In contrast to the central flow, the gradient flow (red) takes a very different trajectory.</div>
     </div>
     <p class="body-text">
-        Thus, our analysis, though informal, is capable of yielding accurate numerical predictions.
-        This leaves no doubt that we do understand what is going on at some level.
+        Thus, although our analysis is based on informal mathematical reasoning, we can see that it is powerful enough to render accurate numerical predictions about the long-term optimization trajectory.
     </p>
     <p class="body-text">
         So far, we have focused on the special case where only one eigenvalue is at the edge of stability.
         But the central flow formalism extends to the general case where an arbitrary number of eigenvalues are at the edge of stability.
     </p>
     <p class="body-text">
-        In general, we model gradient descent as displaced from its time-averaged trajectory by some perturbation \(\delta\) that lies
+        In general, we model gradient descent as displaced from its time-averaged trajectory \(w(t)\) by some perturbation \(\delta_t\) that lies
         within the span of the unstable eigenvectors.
         \[
-            \underset{\color{red} \text{iterate}}{w_t} = \underset{\color{red} \begin{array}{c}  \text{time-averaged} \\[-4pt] \text{iterate} \end{array} }{w(t)} + \underset{\color{red} \begin{array}{c} \text{perturbation} \end{array} }{\delta_t}
+            \underset{\color{red} \text{iterate}}{w_t} = \underset{\color{red} \begin{array}{c}  \text{time-averaged} \\[-4pt] \text{iterate} \end{array} }{w(t)} + \underset{\color{red} \begin{array}{c} \text{perturbation} \end{array} }{\delta_t}.
         \]
     </p>
     <p class="body-text">
         Going through a similar argument as before, we arrive at the ansatz that the time-averaged iterates of gradient descent follow a flow of the form:
         \[
-        \frac{dw}{dt} = - \eta \left[ \nabla L(w) \, + \,\underbrace{\tfrac{1}{2} \nabla_w \langle H(w), \Sigma(t) \rangle}_{\color{red} \text{implicit curvature penalty}} \right]
+        \frac{dw}{dt} = - \eta \left[ \nabla L(w) \, + \,\underbrace{\tfrac{1}{2} \nabla_w \langle H(w), \Sigma(t) \rangle}_{\color{red} \text{implicit curvature penalty}} \right],
         \]
         where \(\Sigma(t)\ := \mathbb{E}[\delta_t \delta_t^T]\) models the instantaneous covariance matrix of the oscillations.
         Here, \(\langle \cdot, \cdot \rangle \) denotes the inner product between two matrices, so the quantity \(\langle H(w), \Sigma(t) \rangle\) is a linear combination
         of the entries of the Hessian, where each entry is weighted by the corresponding entry of \(\Sigma(t)\). 
-        The flow implicitly penalizes this quantity, capturing the effect on the time-averaged trajectory of oscillating with covariance \(\Sigma(t)\).
+        The flow implicitly penalizes this quantity, to capture the effect on the time-averaged trajectory of oscillations with covariance \(\Sigma(t)\).
     </p>
     <p class="body-text">
-        As before, to determine \(\Sigma(t)\), we argue that only possible one value makes sense.  We impose three conditions:
+        As before, to determine \(\Sigma(t)\), we argue that only possible one value makes sense.  We impose three conditions on the flow:
         <ol>
             <li>Since gradient descent prevents any Hessian eigenvalue from rising above \(2/\eta\), no Hessian eigenvalues should rise beyond \(2/\eta\) under the central flow.</li>
             <li>Since gradient descent oscillates along the unstable eigenvectors, the matrix \(\Sigma(t)\) (which models the covariance of these oscillations) should be supported within the Hessian's \(2/\eta \) eigenspace.</li>
@@ -511,9 +542,9 @@
     </p>
     <p class="body-text">
         It can be shown that there is a <em>unique</em> value of \(\Sigma(t)\) that satisfies all three conditions.
-        This \(\Sigma(t)\) is the solution to a type of convex program called a <em>cone complementarity problem</em> (CCP).
+        This \(\Sigma(t)\) is the solution to a type of convex program called a <em>semidefinite complementarity problem</em> (SDCP).
         The central flow is defined as our ansatz with this particular value of \(\Sigma(t)\).
-        Note that this flow automatically reduces to the gradient flow when the sharpness is below \(2/\eta.\)
+        Note that the central flow automatically reduces to the gradient flow when the sharpness is below \(2/\eta.\)
     </p>
     <p class="body-text">
         Let's now watch the central flow in action.  See that as each eigenvalue successively rises to \(2/\eta\), the flow keeps it locked there:
@@ -542,7 +573,8 @@
         <div class="caption">The central flow's \(\Sigma(t)\) accurately predicts the instantaneous covariance of the oscillations.  In particular, each eigenvalue of \(\Sigma(t)\) accurately predicts the variance of oscillations along the corresponding eigenvector.</div>
     </div>
     <p class="body-text">
-        The gradient descent train loss curve behaves non-monotonically over short timescales, while decreasing over long timescales:
+        Let's now use the central flow framework to understand something that every deep learning practitioner is very familiar with: the train loss curve.
+        Here's what it looks like if you zoom in on a typical gradient descent loss curve:
     </p>
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
@@ -552,10 +584,15 @@
             </video>
             <div class="video-overlay">Click to play</div>
         </div>
-        <div class="caption">Under gradient descent, the train loss curve behaves non-monotonically over short timescales, while decreasing consistently over long timescales.</div>
+        <div class="caption">Gradient descent's train loss curve \(L(w_t)\) is non-monotonic.</div>
     </div>
     <p class="body-text">
-        However, the loss along the central flow decreases monotonically.  Indeed, this can be proved.
+        As you can see, gradient descent's loss curve behaves non-monotonically over short-timescales, while consistently decreasing over long-timescales.
+        This makes it challenging to reason about the progress of optimization.
+    </p>
+    <p class="body-text">
+        In contrast, since the central flow is a smooth curve, the train loss evolves smoothly under the central flow.
+        Moreover, it is possible to <em>prove</em> that the central flow decreases the loss monotonically, as illustrated in the following animation:
     </p>
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
@@ -565,25 +602,33 @@
             </video>
             <div class="video-overlay">Click to play</div>
         </div>
-        <div class="caption">The loss along the central flow (black) decreases monotonically.</div>
+        <div class="caption">The central flow loss curve \(L(w(t))\) decreases monotonically.</div>
     </div>
     <p class="body-text">
-        Note that the gradient descent loss tends to be higher than the central flow loss.
-        However, because the central flow models the covariance \(\Sigma(t)\) with which gradient descent oscillates around the central flow,
-        it can render predictions for the <em>time-averaged</em> train loss along the gradient descent trajectory:
+        That is, the loss along the central flow \(L(w(t))\) is a <b>hidden progress metric</b> for optimization.
+    </p>
+    <p class="body-text">
+        As you can see above, the loss along the central flow is consistently <em>lower</em> than the loss along the gradient descent trajectory.
+        The intuitive explanation is that at EOS, gradient descent can be viewed as "bouncing between valley walls", whereas
+        the central flow moves nearly along the "valley floor."  The loss is higher on the valley walls, when gradient descent is located, than on the valley floor, where the central flow is located.
+    </p>
+    <!-- <div class="figure"  style="width:25%; float: right; margin: 0 0 16px 32px;"> -->
+    <div class="figure"  style="width:25%;">
+        <img src="media/valley.png">
+        <div class="caption">Gradient descent can be visualized as bouncing between the "walls of a valley".</div>
+    </div>
+    <p class="body-text">
+        Fortunately, because the central flow models the covariance \(\Sigma(t)\) with which gradient descent oscillates around the central flow, it can render predictions for the <em>time-averaged</em> train loss along the gradient descent trajectory:
         \[
             \underset{\color{red} \begin{array}{c}  \text{time-averaged} \\[-4pt] \text{train loss} \end{array}}{\mathbb{E}[L(w_t)]} =
             \underset{\color{red} \begin{array}{c}  \text{loss at} \\[-4pt] \text{central flow} \end{array}}{L(w(t))} +
             \underset{\color{red} \begin{array}{c}  \text{contribution from} \\[-4pt] \text{oscillations} \end{array}}{\frac{1}{\eta} \text{tr}(\Sigma(t))}
         \]
     </p>
-    <div class="figure"  style="width:25%; float: right; margin: 0 0 16px 32px;">
-        <img src="media/valley.png">
-        <div class="caption">Gradient descent should be visualized as oscillating between the walls of a valley.</div>
-    </div>
+
 
     <p class="body-text">
-        Here, we plot that as a dashed line:
+        The following animation shows that this prediction is quite accurate:
     </p>
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
@@ -593,7 +638,12 @@
             </video>
             <div class="video-overlay">Click to play</div>
         </div>
-        <div class="caption">The quantity \(L(w) + \tfrac{1}{\eta} \text{tr}(\Sigma(t))\) (dashed black line) accurately predicts the time-averaged train loss along the gradient descent trajectory.</div>
+        <div class="caption">The quantity \(L(w(t)) + \tfrac{1}{\eta} \text{tr}(\Sigma(t))\) (dashed black) accurately predicts the time-averaged train loss of gradient descent.</div>
     </div>
+
+    <p class="body-text">
+        The loss along the central flow \(L(w(t))\) is roughly analogous to the loss evaluated at an exponential moving average of the recent weights.
+        The prediction for the time-averaged train loss  \(L(w(t)) + \tfrac{1}{\eta} \text{tr}(\Sigma(t))\) is roughly analogous to the smoothed training loss curve.
+    </p>
 </body>
 </html> 
