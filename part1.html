@@ -242,7 +242,7 @@
         <!-- <div class="caption">.</div> -->
     </div>
     <p class="body-text">
-        Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> demonstrating these EOS dynamics, and posing the question:
+        Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> which demonstrated these EOS dynamics, and posed the question:
     </p>
     <div class="boxed-text">
         How does gradient descent converge in deep learning, if not for any reason given in the optimization literature?
@@ -409,7 +409,7 @@
         The central flow models the <em>time-averaged</em> (i.e. locally smoothed) trajectory of gradient descent, as illustrated in the following cartoon:
     </p>
     <p class="body-text">
-        <div class="figure" style="width: 60%; display: block; margin: 0 auto;">
+        <div class="figure" style="width: 85%; display: block; margin: 0 auto;">
             <img src="media/fig1.png", alt="Central flow cartoon">
             <div class="caption">The central flow (black) models the time-averaged trajectory of gradient descent (blue).</div>
         </div>
@@ -536,7 +536,7 @@
     <p class="body-text">
         The right pane shows the Euclidean distance in weight space between gradient descent and the central flow.
         Observe that this distance stays small over time, indicating that the central flow accurately tracks the trajectory of gradient descent over the long term.
-        In contrast, the figure below shows that <em>gradient flow</em> \eqref{eq:gradient-flow}, drawn in red, takes a very different trajectory from gradient descent:
+        In contrast, the figure below shows that <em>gradient flow</em> \eqref{eq:gradient-flow}, portrayed in red, takes a very different trajectory from gradient descent:
     </p>
     <div class="figure">
         <img src="media/central-flow-single-action-gf.png">
@@ -547,7 +547,7 @@
     </p>
     <p class="body-text">
         So far, we have focused on the special case where only one eigenvalue is at the edge of stability.
-        The central flow formalism extends more generally to setting where an arbitrary number of eigenvalues can be at the edge of stability (including zero).
+        But the central flow formalism extends more generally to setting where an arbitrary number of eigenvalues can be at the edge of stability (including zero).
     </p>
     <p class="body-text">
         In general, we model gradient descent as displaced from its time-averaged trajectory \(w(t)\) by some perturbation \(\delta_t\) that lies
@@ -600,8 +600,8 @@
     </p>
     <p class="body-text">
         Now for the coolest part (in our subjective opinion).
-        As before, we can verify that the central flow's \(\Sigma(t)\) does indeed accurately model the instantaneous covariance of the oscillations.
-        In particular, we can see that each eigenvalue of \(\Sigma(t)\) accurately matches the instantaneous variance of oscillations along the corresponding eigenvector of \(\Sigma(t)\):
+        As before, we can verify that our prediction \(\Sigma(t)\) does indeed accurately model the instantaneous covariance of the oscillations.
+        In particular, we can see that each eigenvalue of \(\Sigma(t)\) accurately predicts the instantaneous variance of oscillations along the corresponding eigenvector of \(\Sigma(t)\):
     </p>
     <div class="figure">
         <div class="video-container">
@@ -653,7 +653,7 @@
         Philosophically, we think of the central flow as the "true" training process, and we regard the actual gradient descent trajectory as merely a "noisy" approximation to this true underlying process.
     </p>
     <p class="body-text">
-        In particular, let's now use the central flow framework to understand something that every deep learning practitioner is very familiar with: the train loss curve.
+        In particular, let's use the central flow framework to understand something that every deep learning practitioner is familiar with: the train loss curve.
         Here's what a typical gradient descent loss curve looks like:
     </p>
     <div class="figure">
@@ -671,7 +671,7 @@
         This makes it challenging to reason about the progress of optimization.
     </p>
     <p class="body-text">
-        In contrast, the central flow's loss curve is much nicer:
+        In contrast, the central flow's loss curve \(L(w(t))\) is much nicer:
     </p>
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
@@ -684,7 +684,7 @@
         <div class="caption">The central flow loss curve \(L(w(t))\) decreases monotonically.</div>
     </div>
     <p class="body-text">
-        In fact, it is possible to <em>prove</em> that the central flow decreases the loss monotonically.
+        In fact, it is possible to <em>prove</em> that the central flow decreases the loss monotonically: \( \frac{d}{dt} L(w(t)) \leq 0 \).
         Thus, the loss along the central flow \(L(w(t))\) is a <b>hidden progress metric</b>, or potential function, for the optimization process.
     </p>
     <p class="body-text">
@@ -693,9 +693,9 @@
         the central flow moves nearly along the "valley floor."  The loss is higher on the valley walls, when gradient descent is located, than on the valley floor, where the central flow is located.
     </p>
     <!-- <div class="figure"  style="width:25%; float: right; margin: 0 0 16px 32px;"> -->
-    <div class="figure"  style="width:25%;">
-        <img src="media/valley.png">
-        <div class="caption">Gradient descent can be visualized as bouncing between the "walls of a valley".</div>
+    <div class="figure"  style="width:50%;">
+        <img src="media/valley-annotation.png">
+        <div class="caption">Gradient descent can be visualized as bouncing between the "walls of a valley", whereas the central flow moves nearly along the "valley floor."</div>
     </div>
     <p class="body-text">
         Fortunately, because the central flow models the covariance \(\Sigma(t)\) with which gradient descent oscillates around the central flow, it can render predictions for the <em>time-averaged</em> train loss along the gradient descent trajectory:
