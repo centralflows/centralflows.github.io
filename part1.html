@@ -110,7 +110,7 @@
     <p class="body-text"> 
         Yet, as we will now see, the reality in deep learning is quite different.
         Let's train a neural network using gradient descent with \(\eta = 0.02\).
-        This network happens to be a Vision Transformer trained on a subset of CIFAR-10, but you'd see a similar picture with basically any neural network on any dataset.
+        This network happens to be a Vision Transformer trained on (a subset of CIFAR-10), but you'd see a similar picture with basically any neural network on any dataset.
     </p>
 
     <p class="body-text">
@@ -212,10 +212,7 @@
     </div>
     <p class="body-text">
         We call these dynamics training at the <em>edge of stability</em> (EOS).
-        This behavior is not particular to this specific network; it is generic in deep learning.
-        We claim that you'll see these same dynamics if you take any standard deep learning setup and switch the optimizer to deterministic gradient descent.
-    </p>
-    <p class="body-text">
+        This behavior is not specific to this network; rather, as far as anyone can tell, it is generic in deep learning.
         For example, here are several vision architectures trained on a subset of CIFAR-10:
     </p>
     <div class="figure">
@@ -242,7 +239,12 @@
         <!-- <div class="caption">.</div> -->
     </div>
     <p class="body-text">
-        Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> which demonstrated these EOS dynamics, and posed the question:
+        We believe that you'll see these same dynamics if you take any standard deep learning setup, and switch the optimizer to deterministic gradient descent.
+        (Note that practical training runs don't look exactly like this because they use stochastic optimizers, and SGD has <a href="https://arxiv.org/abs/2412.20553">slightly different dynamics</a>.
+        We study gradient descent because we believe it is a necessary stepping stone to understanding SGD.)
+    </p>
+    <p class="body-text">
+        Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> which showed that gradient descent exhibits these EOS dynamics, and posed the question:
     </p>
     <div class="boxed-text">
         How does gradient descent converge in deep learning, if not for any reason given in the optimization literature?
@@ -406,7 +408,7 @@
         <div class="caption">The central flow (black) approximates gradient descent (blue) even at the edge of stability.</div>
     </div>
     <p class="body-text">
-        The central flow models the <em>time-averaged</em> (i.e. locally smoothed) trajectory of gradient descent, as illustrated in the following cartoon:
+        The central flow models the <em>time-averaged</em> (i.e. locally smoothed) trajectory of gradient descent, as illustrated in the following cartoon of the weight-space dynamics:
     </p>
     <p class="body-text">
         <div class="figure" style="width: 85%; display: block; margin: 0 auto;">
@@ -487,7 +489,7 @@
     </p>
     <p class="body-text">
         The first term is the time derivative of the sharpness under gradient flow, which will be positive (as otherwise we would have left the edge of stability).
-        The second term is the sharpness reduction from the oscillations.
+        The second term is the sharpness reduction that is induced by the oscillations.
         There is a unique value of \(\sigma^2(t)\) for which the second term cancels the first term to yield \(\frac{dS}{dt} = 0\), and this is given by:
     </p>
     <div class="boxed-text">
@@ -760,6 +762,20 @@
     </div>
     <p class="body-text">
         Please see the paper for a discussion of the circumstances under which the central flow is a good approximation to gradient descent.
+    </p>
+    <p class="body-text">
+        We are now in a position to answer the titular question: "how does gradient descent work?"
+        Gradient descent takes an oscillatory path through weight space &mdash; it follows some macroscopic trajectory while oscillating back-and-forth along the top Hessian eigenvectors.
+        (Visually, this resembles moving through a "valley" while bouncing between the "valley walls".)
+        The oscillations dominate the train loss and gradient norm over the short-term, but mostly cancel out over the long run.
+        Their only lasting effect on the macroscopic trajectory is to induce implicit reduction of curvature, which prevents any Hessian eigenvalues from rising above \(2/\eta\).        
+    </p>
+    <p class="body-text">
+        To analyze the system, we derive a differential equation called a <em>central flow</em> that characterizes the macroscopic trajectory \(w(t)\), as well as the covariance of the oscillations \(\Sigma(t)\).
+        <strong>TODO finish this</strong>
+        <!-- While the exact oscillations may be chaotic, their covariance is predictable, and the macroscopic gradient descent trajectory only depends on the oscillations via this covariance. -->
+        <!-- To characterize this macroscopic trajectory, we can jointly solve for the macroscopic trajectory and oscillation covariance, as there is only one combination that satisfies several natural desiderata. -->
+        <!-- The central flow is a <b>hidden progress metric</b>, or potential function, for the optimization process. -->
     </p>
 </body>
 </html> 
