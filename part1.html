@@ -213,7 +213,7 @@
     <p class="body-text">
         We call these dynamics training at the <em>edge of stability</em> (EOS).
         This behavior is not specific to this network; rather, as far as anyone can tell, it is generic in deep learning.
-        For example, here are several vision architectures trained on a subset of CIFAR-10:
+        For example, here are several vision architectures trained using gradient descent on a subset of CIFAR-10:
     </p>
     <div class="figure">
         <div class="video-container">
@@ -226,7 +226,7 @@
         <!-- <div class="caption">.</div> -->
     </div>
     <p class="body-text">
-        And here are several sequence architectures trained on a sequence prediction task:
+        And here are several sequence architectures trained using gradient descent on a sequence prediction task:
     </p>
     <div class="figure">
         <div class="video-container">
@@ -239,9 +239,8 @@
         <!-- <div class="caption">.</div> -->
     </div>
     <p class="body-text">
-        We believe that you'll see these same dynamics if you take any standard deep learning setup, and switch the optimizer to deterministic gradient descent.
-        (Note that practical training runs don't look exactly like this because they use stochastic optimizers, and SGD has <a href="https://arxiv.org/abs/2412.20553">slightly different dynamics</a>.
-        We study gradient descent because we believe it is a necessary stepping stone to understanding SGD.)
+        Practical training runs don't look exactly like this, because they use stochastic optimizers, and SGD has <a href="https://arxiv.org/abs/2412.20553">somewhat different dynamics</a>.
+        But we believe that you'll see these same dynamics if you take any standard deep learning setup, and switch the optimizer to deterministic gradient descent.
     </p>
     <p class="body-text">
         Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> which showed that gradient descent exhibits these EOS dynamics, and posed the question:
@@ -540,8 +539,8 @@
         Observe that this distance stays small over time, indicating that the central flow accurately tracks the trajectory of gradient descent over the long term.
         In contrast, the figure below shows that <em>gradient flow</em> \eqref{eq:gradient-flow}, portrayed in red, takes a very different trajectory from gradient descent:
     </p>
-    <div class="figure">
-        <img src="media/central-flow-single-action-gf.png">
+    <div class="figure" style="width: 50%; display: block; margin: 0 auto;">
+        <img src="media/central-flow-single-action-gf-short.png">
         <div class="caption">The gradient flow (red) takes a very different trajectory than gradient descent.</div>
     </div>
     <p class="body-text">
@@ -584,10 +583,10 @@
         Note that when the sharpness is below  \(2/\eta\), the SDCP will always return \(\Sigma(t) = 0\), and so the central flow will reduce to the gradient flow.
     </p>
     <p class="body-text">
-        Let's now watch the central flow in action.  Observe that as each eigenvalue successively rises to \(2/\eta\), the central flow keeps it locked there:
+        Let's now watch the central flow in action:
     </p>
     <div class="figure">
-        <div class="video-container" style="width: 80%; display: block; margin: 0 auto;">
+        <div class="video-container" style="width: 100%; display: block; margin: 0 auto;">
             <video width="100%">
                 <source src="media/centralflow-multi-unstable.mp4" type="video/mp4">
                 Your browser does not support the video tag.
@@ -597,8 +596,15 @@
         <div class="caption">Under the central flow, each eigenvalue rises to \(2/\eta\) and then stays locked there.</div>
     </div>
     <p class="body-text">
-        Observe too, that the distance between the central flow and gradient descent stays small over time, whereas the distance between <em>gradient flow</em>
-            and gradient descent starts to grow once the dynamics enter EOS.
+        On the left, observe that as each eigenvalue successively rises to \(2/\eta\), the central flow keeps it locked there.
+        (The central flow also allows eigenvalues to leave EOS when appropriate.)
+    </p>
+    <p class="body-text">
+        In the center, observe that the central flow's \(\Sigma(t)\) always has the same rank as the number of Hessian eigenvalues that are at the edge of stability.
+    </p>
+    <p class="body-text">
+        On the right, observe that the distance between the gradient descent and the central flow stays small over time, whereas the distance between gradient descent and <em>gradient flow</em>
+            starts to grow once the dynamics enter EOS.  (Note that we stop discretizing gradient flow at a certain point, since the sharpness gets too high, rendering discretization too challenging.)
     </p>
     <p class="body-text">
         Now for the coolest part (in our subjective opinion).
@@ -655,7 +661,7 @@
         Philosophically, we think of the central flow as the "true" training process, and we regard the actual gradient descent trajectory as merely a "noisy" approximation to this true underlying process.
     </p>
     <p class="body-text">
-        In particular, let's use the central flow framework to understand something that every deep learning practitioner is familiar with: the train loss curve.
+        In particular, let's use the central flow perspective to understand something that every deep learning practitioner is familiar with: the train loss curve.
         Here's what a typical gradient descent loss curve looks like:
     </p>
     <div class="figure">
@@ -691,7 +697,7 @@
     </p>
     <p class="body-text">
         As you can see above, the loss along the central flow is consistently <em>lower</em> than the loss along the gradient descent trajectory.
-        The intuitive explanation is that at EOS, gradient descent can be viewed as "bouncing between valley walls", whereas
+        The intuitive explanation is that at EOS, gradient descent can be viewed as <a href="https://arxiv.org/abs/1802.08770">"bouncing between valley walls"</a>, whereas
         the central flow moves nearly along the "valley floor."  The loss is higher on the valley walls, when gradient descent is located, than on the valley floor, where the central flow is located.
     </p>
     <!-- <div class="figure"  style="width:25%; float: right; margin: 0 0 16px 32px;"> -->
