@@ -5,24 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>How does gradient descent work?</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script src="js/mathjax-config.js"></script>
+    <script src="../js/mathjax-config.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="js/video-controls.js"></script>
+    <script src="../js/video-controls.js"></script>
 </head>
 <body>
     <nav class="top-nav">
-        <a href="index.html">Introduction</a>
-        <span class="separator">|</span>
-        <a href="part1.html" class="active">Part I</a>
-        <span class="separator">|</span>
-        <a href="part2.html">Part II</a>
-        <span class="separator">|</span>
-        <a href="part3.html">Part III</a>
-        <span class="separator">|</span>
-        <a href="conclusion.html">Conclusion</a>
+        <div class="top-nav-left">
+            <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a>
+        </div>
+        <div class="top-nav-center">
+            <a href="../">Introduction</a>
+            <span class="separator">|</span>
+            <a href="../part1" class="active">Part I</a>
+            <span class="separator">|</span>
+            <a href="../part2">Part II</a>
+            <span class="separator">|</span>
+            <a href="../part3">Part III</a>
+            <span class="separator">|</span>
+            <a href="../conclusion">Conclusion</a>
+        </div>
+        <div class="top-nav-right">
+            <a href="https://github.com/locuslab/central_flows">💻 Code</a>
+        </div>
     </nav>
+
+    <p class="companion-text">
+        This is the companion website for the paper <a href="https://arxiv.org/abs/2410.24206">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025.
+     </p>
 
     <h1>Part I: how does gradient descent work?</h1>
 
@@ -42,8 +54,10 @@
         Perhaps surprisingly, traditional analyses of gradient descent cannot capture the typical dynamics of gradient descent in deep learning.  We'll first explain why, and then we'll present a new analysis of gradient descent that <em>does</em> apply in deep learning.
     </p>
 
+    <h2>The dynamics of gradient descent</h2>
+
     <p class="body-text">
-        Let's start with the picture that everyone has seen before.
+        Let's start with the picture that everyone has likely seen before.
         Suppose that we run gradient descent on a quadratic function \( \frac{1}{2} S x^2\), i.e. a smiley-face parabola.
         The parameter \(S\) controls the second derivative ("curvature") of the parabola: when \(S\) is larger, the parabola is steeper. 
     </p>
@@ -56,7 +70,7 @@
     <div class="figure">
         <div class="video-container" style="width: 60%; display: block; margin: 0 auto;">
             <video width="100%">
-                <source src="media/quadratic.mp4" type="video/mp4">
+                <source src="../media/quadratic.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -72,7 +86,7 @@
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
             <video width="100%">
-                <source src="media/multi2.mp4" type="video/mp4">
+                <source src="../media/multi2.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -93,13 +107,13 @@
 
     <p class="body-text">
         In light of this discussion, why does gradient descent work in deep learning?
-        The most natural explanation is that gradient descent stays in regions of weight space where the sharpness \(S(w)\) is less than \(2/\eta\).
+        Perhaps the most natural explanation is that gradient descent stays in regions of weight space where the sharpness \(S(w)\) is less than \(2/\eta\).
         In other words, if we define the "stable region" as the subset of weight space where the sharpness is less than \(2/\eta\), then 
-        perhaps gradient descent stays inside the stable region throughout training, as depicted in the following cartoon:
+        perhaps gradient descent stays inside the stable region throughout training, as in the following cartoon:
     </p>
 
     <div class="figure" id="expectation-figure">
-        <img src="media/expectation-small.png" style="width:40%; display: block; margin: 0 auto;" alt="Traditional optimization theory suggests gradient descent stays in the stable region">
+        <img src="../media/expectation-small.png" style="width:40%; display: block; margin: 0 auto;" alt="Traditional optimization theory suggests gradient descent stays in the stable region">
         <div class="caption">The traditional perspective is that gradient descent remains throughout training inside the "stable region", i.e. the subset of weight space where \(S(w) \le 2/\eta\),  visualized here as a gray blob.</div>
     </div>
 
@@ -110,7 +124,7 @@
     <p class="body-text"> 
         Yet, as we will now see, the reality in deep learning is quite different.
         Let's train a neural network using gradient descent with \(\eta = 0.02\).
-        This network happens to be a Vision Transformer trained on (a subset of CIFAR-10), but you'd see a similar picture with basically any neural network on any dataset.
+        This network happens to be a Vision Transformer trained on a subset of CIFAR-10, but you'd see a similar picture with basically any neural network on any dataset.
     </p>
 
     <p class="body-text">
@@ -120,7 +134,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/progressive-sharpening.mp4" type="video/mp4">
+                <source src="../media/progressive-sharpening.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -141,7 +155,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/blowup.mp4" type="video/mp4">
+                <source src="../media/blowup.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -162,7 +176,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/stabilization.mp4" type="video/mp4">
+                <source src="../media/stabilization.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -180,7 +194,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/eos.mp4" type="video/mp4">
+                <source src="../media/eos.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -196,7 +210,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/smaller-lr.mp4" type="video/mp4">
+                <source src="../media/smaller-lr.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -207,18 +221,18 @@
         These dynamics are quite surprising. If the traditional picture is that gradient descent remains inside the stable region throughout training, then the reality is that gradient descent is frequently exiting the stable region, but is somehow <em>steering itself back inside</em> each time.
     </p>
     <div class="figure">
-        <img src="media/reality-small.png" style="width:40%; display: block; margin: 0 auto;" alt="Traditional optimization theory suggests gradient descent stays in the stable region">
+        <img src="../media/reality-small.png" style="width:40%; display: block; margin: 0 auto;" alt="Traditional optimization theory suggests gradient descent stays in the stable region">
         <div class="caption">Whereas the <a href="#expectation-figure">traditional picture</a> is that gradient descent stays entirely within the stable region, in reality gradient descent is tending to leave the stable region, but is <em>dynamically steering</em> itself back inside.</div>
     </div>
     <p class="body-text">
         We call these dynamics training at the <em>edge of stability</em> (EOS).
-        This behavior is not specific to this network; rather, as far as anyone can tell, it is generic in deep learning.
+        This behavior is not specific to this network; rather, as far as anyone can tell, it is a universal phenomenon in deep learning.
         For example, here are several vision architectures trained using gradient descent on a subset of CIFAR-10:
     </p>
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/eos-loss-curves-vision.mp4" type="video/mp4">
+                <source src="../media/eos-loss-curves-vision.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -231,7 +245,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/eos-loss-curves-sequence.mp4" type="video/mp4">
+                <source src="../media/eos-loss-curves-sequence.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -240,7 +254,9 @@
     </div>
     <p class="body-text">
         Practical training runs don't look exactly like this, because they use stochastic optimizers, and SGD has <a href="https://arxiv.org/abs/2412.20553">somewhat different dynamics</a>.
-        But we believe that you'll see these same dynamics if you take any standard deep learning setup, and switch the optimizer to deterministic gradient descent.
+        (For example, exaggerated loss spikes are less common with stochastic optimizers.)
+        But we have every reason to believe that you'll see these exact same dynamics if you take any standard deep learning setup, and switch the optimizer to deterministic gradient descent.
+        Since deterministic gradient descent is the simplest optimizer, our viewpoint is that we must first understand its behavior before moving onto more complex optimizers such as SGD.
     </p>
     <p class="body-text">
         Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> which showed that gradient descent exhibits these EOS dynamics, and posed the question:
@@ -257,7 +273,7 @@
         Oscillations along the top Hessian eigenvector automatically trigger reduction of the top Hessian eigenvalue.
     </div>
     <div class="figure" style="width:25%; float: right; margin: 0 0 16px 32px;">
-        <img src="media/divergence-illustration.png">
+        <img src="../media/divergence-illustration.png">
         <div class="caption">The iterate \(w\) is displaced from \(\overline{w}\) along the direction \(u\) with magnitude \(x\).</div>
     </div>
     <p class="body-text">
@@ -305,7 +321,7 @@
         The quantity \( u^T H(\overline{w}) u \) is the curvature in the \(u\) direction.
         The gradient of this quantity, \(\nabla_{\overline{w}} [u^T H(\overline{w}) u ]\), is the <em>gradient</em> of the curvature in the \(u\) direction.
         Since \(u\) is the top Hessian eigenvector, the curvature in the \(u\) direction is the top Hessian eigenvalue, i.e. the sharpness.
-        Similarly, the <em>gradient</em> of this curvature is the <em>gradient</em> of the sharpness.
+        Similarly, it can be shown that the <em>gradient</em> of this curvature is the <em>gradient</em> of the sharpness.
     </p>
     <p class="body-text">
         Thus, when gradient descent is oscillating along the top Hessian eigenvector with magnitude \(x\), the gradient picks up a term \( \frac{1}{2} x^2 \nabla S(\overline{w}) \) which points in the direction of gradient of the sharpness, \(\nabla S(\overline{w})\).
@@ -318,7 +334,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/onecycle.mp4" type="video/mp4">
+                <source src="../media/onecycle.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -341,7 +357,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/eos-one-unstable.mp4" type="video/mp4">
+                <source src="../media/eos-one-unstable.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -357,7 +373,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/eos-multiple.mp4" type="video/mp4">
+                <source src="../media/eos-multiple.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -372,6 +388,7 @@
         Rather, we argue that the more important question is: what <em>macroscopic</em> path does gradient descent take through weight space?
         The goal of our analysis will be to derive a differential equation called a <em>central flow</em> that characterizes this path.
     </p>
+    <h2>Deriving the central flow</h2>
     <p class="body-text">
         The usual continuous-time approximation to gradient descent is the <em>gradient flow</em>:
     \[
@@ -385,7 +402,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/gradientflow.mp4" type="video/mp4">
+                <source src="../media/gradientflow.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -399,7 +416,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/centralflow.mp4" type="video/mp4">
+                <source src="../media/centralflow.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -411,7 +428,7 @@
     </p>
     <p class="body-text">
         <div class="figure" style="width: 85%; display: block; margin: 0 auto;">
-            <img src="media/fig1.png", alt="Central flow cartoon">
+            <img src="../media/fig1.png", alt="Central flow cartoon">
             <div class="caption">The central flow (black) models the time-averaged trajectory of gradient descent (blue).</div>
         </div>
     </p>
@@ -515,7 +532,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/central-flow-one-unstable.mp4" type="video/mp4">
+                <source src="../media/central-flow-one-unstable.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -540,7 +557,7 @@
         In contrast, the figure below shows that <em>gradient flow</em> \eqref{eq:gradient-flow}, portrayed in red, takes a very different trajectory from gradient descent:
     </p>
     <div class="figure" style="width: 50%; display: block; margin: 0 auto;">
-        <img src="media/central-flow-single-action-gf-short.png">
+        <img src="../media/central-flow-single-action-gf-short.png">
         <div class="caption">The gradient flow (red) takes a very different trajectory than gradient descent.</div>
     </div>
     <p class="body-text">
@@ -548,7 +565,7 @@
     </p>
     <p class="body-text">
         So far, we have focused on the special case where only one eigenvalue is at the edge of stability.
-        But the central flow formalism extends more generally to setting where an arbitrary number of eigenvalues can be at the edge of stability (including zero).
+        But the central flow formalism extends more generally to the setting where an arbitrary number of eigenvalues can be at the edge of stability (including zero).
     </p>
     <p class="body-text">
         In general, we model gradient descent as displaced from its time-averaged trajectory \(w(t)\) by some perturbation \(\delta_t\) that lies
@@ -588,7 +605,7 @@
     <div class="figure">
         <div class="video-container" style="width: 100%; display: block; margin: 0 auto;">
             <video width="100%">
-                <source src="media/centralflow-multi-unstable.mp4" type="video/mp4">
+                <source src="../media/centralflow-multi-unstable.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -614,7 +631,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/predict-sigma.mp4" type="video/mp4">
+                <source src="../media/predict-sigma.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -626,6 +643,7 @@
         Moreover, we have shown that the long-term trajectory of gradient descent only depends on the oscillations via this covariance.
         Thus, we don't <em>need</em> to understand the exact oscillations to understand the long-term path taken by gradient descent.
     </p>
+    <h2>Interpreting the central flow</h2>
     <p class="body-text">
         OK, so we've shown that the central flow takes the same long-term path as gradient descent.
         But, one might ask, if they're the same, then why is one better?
@@ -635,12 +653,12 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/eos-network-predictions.mp4" type="video/mp4">
+                <source src="../media/eos-network-predictions.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
         </div>
-        <div class="caption">We show the network's predictions on three test examples, plotting four output units each (colors). 
+        <div class="caption">We show the network's predictions on three test examples (columns), plotting four output units each (colors). 
             These predictions evolve erratically, due to the oscillations.
         </div>
     </div>
@@ -650,7 +668,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/central-flow-network-predictions.mp4" type="video/mp4">
+                <source src="../media/central-flow-network-predictions.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -667,7 +685,7 @@
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
             <video width="100%">
-                <source src="media/loss-raw.mp4" type="video/mp4">
+                <source src="../media/loss-raw.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -684,7 +702,7 @@
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
             <video width="100%">
-                <source src="media/loss-central-flow.mp4" type="video/mp4">
+                <source src="../media/loss-central-flow.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -702,7 +720,7 @@
     </p>
     <!-- <div class="figure"  style="width:25%; float: right; margin: 0 0 16px 32px;"> -->
     <div class="figure"  style="width:50%;">
-        <img src="media/valley-annotation.png">
+        <img src="../media/valley-annotation.png">
         <div class="caption">Gradient descent can be visualized as bouncing between the "walls of a valley", whereas the central flow moves nearly along the "valley floor."</div>
     </div>
     <p class="body-text">
@@ -721,7 +739,7 @@
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
             <video width="100%">
-                <source src="media/loss-predicted.mp4" type="video/mp4">
+                <source src="../media/loss-predicted.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -743,7 +761,7 @@
     <div class="figure">
         <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
             <video width="100%">
-                <source src="media/gradient-norm.mp4" type="video/mp4">
+                <source src="../media/gradient-norm.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -752,14 +770,14 @@
             Most of this gradient norm originates from the oscillations.
         </div>
     </div>
-
+    <h2>Conclusion</h2>
     <p class="body-text">
         Although this post has focused on a particular ViT as a running example, we stress that our analysis is fully generic, and applies across a variety of architectures and tasks:
     </p>
     <div class="figure">
         <div class="video-container">
             <video width="100%">
-                <source src="media/central-flow-loss-curves.mp4" type="video/mp4">
+                <source src="../media/central-flow-loss-curves.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>

@@ -5,24 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>How does RMSProp work?</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script src="js/mathjax-config.js"></script>
+    <script src="../js/mathjax-config.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="js/video-controls.js"></script>
+    <script src="../js/video-controls.js"></script>
 </head>
 <body>
     <nav class="top-nav">
-        <a href="index.html">Introduction</a>
-        <span class="separator">|</span>
-        <a href="part1.html">Part I</a>
-        <span class="separator">|</span>
-        <a href="part2.html">Part II</a>
-        <span class="separator">|</span>
-        <a href="part3.html" class="active">Part III</a>
-        <span class="separator">|</span>
-        <a href="conclusion.html">Conclusion</a>
+        <div class="top-nav-left">
+            <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a>
+        </div>
+        <div class="top-nav-center">
+            <a href="../">Introduction</a>
+            <span class="separator">|</span>
+            <a href="../part1">Part I</a>
+            <span class="separator">|</span>
+            <a href="../part2">Part II</a>
+            <span class="separator">|</span>
+            <a href="../part3" class="active">Part III</a>
+            <span class="separator">|</span>
+            <a href="../conclusion">Conclusion</a>
+        </div>
+        <div class="top-nav-right">
+            <a href="https://github.com/locuslab/central_flows">💻 Code</a>
+        </div>
     </nav>
+
+    <p class="companion-text">
+        This is the companion website for the paper <a href="https://arxiv.org/abs/2410.24206">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025.
+     </p>
 
     <h1>Part III: how does RMSProp work?</h1>
 
@@ -58,7 +70,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%" style="width: 40%; display: block; margin: 0 auto;">
-                <source src="media/rmsprop-loss.mp4" type="video/mp4">
+                <source src="../media/rmsprop-loss.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -72,7 +84,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%"">
-                <source src="media/rmsprop-discrete-nu.mp4" type="video/mp4">
+                <source src="../media/rmsprop-discrete-nu.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -84,7 +96,7 @@
         Since this EMA is used to determine the algorithm's step sizes \( \eta / \sqrt{\nu_t} \), we need to understand the origin of this behavior if we want to understand how RMSProp sets its step sizes / preconditioner.
     </p>
     <p class="body-text">
-        These fluctuations in the gradient arise because (like gradient descent) RMSProp is operating in an oscillatory <em>edge of stability</em> regime.
+        These fluctuations in the gradient arise because, like gradient descent, RMSProp is operating in an oscillatory <em>edge of stability</em> regime.
     </p>
     <p class="body-text">
         To understand why RMSProp would oscillate, consider running preconditioned gradient descent: \[ w_{t+1} = w_t - P^{-1} \nabla L(w_t) \] on a quadratic function with Hessian \( H \).
@@ -93,7 +105,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%" style="width: 40%; display: block; margin: 0 auto;">
-                <source src="media/preconditioned-gd-quadratic.mp4" type="video/mp4">
+                <source src="../media/preconditioned-gd-quadratic.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -113,7 +125,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%" style="width: 80%; display: block; margin: 0 auto;">
-                <source src="media/rmsprop-eos.mp4" type="video/mp4">
+                <source src="../media/rmsprop-eos.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -121,25 +133,25 @@
         <div class="caption">As RMSProp trains, the top eigenvalue of the preconditioned Hessian \( \text{diag}(\eta / \sqrt{\nu}) H(w_t)\) equilibrates around the value 2.</div>
     </div>
     <p class="body-text">
-        You can see that the top eigenvalues rise to the threshold 2, at which point RMSProp enters an <em>edge of stability</em> regime where the top eigenvalues equilibrate around this value.
+        You can see that the top eigenvalue rises to the threshold 2, at which point RMSProp enters an <em>edge of stability</em> regime where the top eigenvalue(s) equilibrate around this value.
     </p>
     <p class="body-text">
         At the edge of stability, RMSProp oscillates along the unstable eigenvectors of the preconditioned Hessian, and such oscillations, in turn, induce reduction of the corresponding eigenvalues.
         There are two distinct mechanisms by which oscillations along unstable eigenvectors reduce the unstable eigenvalues of the preconditioned Hessian \( P_t^{-1} H(w_t) \).
-        First, such oscillations induce implicit regularization of the Hessian \(H(w_t)\), as can be seen by a local cubic Taylor expansion.
+        First, such oscillations induce implicit regularization of the Hessian \(H(w_t)\), as can be seen by considering a local cubic Taylor expansion.
         Second, they increase the gradient and hence the preconditioner \(P_t\).
     </p>
     <p class="body-text">
         While analyzing the exact dynamics is challenging, analyzing the <em>time-averaged</em> dynamics is much easier.
         We will derive a central flow \(w(t)\) that models the time-averaged trajectory of RMSProp.
-        As in <a href="part1.html">Part I</a>, we model RMSProp \(\{w_t\}\) as being displaced from the central flow \(w(t)\) by some perturbation \(\delta_t\) with covariance \(\Sigma(t)\) that lies
+        As in <a href="../part1">Part I</a>, we model RMSProp \(\{w_t\}\) as being displaced from the central flow \(w(t)\) by some perturbation \(\delta_t\) with covariance \(\Sigma(t)\) that lies
         within the span of the unstable eigenvectors.
         \[
             \underset{\color{red} \text{iterate}}{w_t} = \underset{\color{red} \begin{array}{c}  \text{time-averaged} \\[-4pt] \text{iterate} \end{array} }{w(t)} + \underset{\color{red} \begin{array}{c} \text{perturbation} \end{array} }{\delta_t}  \quad \text{where} \quad \mathbb{E}[\delta_t \delta_t^T] = \Sigma(t).
         \]
     </p>
     <p class="body-text">
-        Recall from <a href="part1.html">Part I</a> that the time-averaged gradient is then approximately:
+        Recall from <a href="../part1">Part I</a> that the time-averaged gradient is then approximately:
         \[
         \underbrace{\mathbb{E}[\nabla L(w_t)]}_{\color{red}{\substack{\text{time-average} \\ \text{of gradient}}}} \approx
              \underbrace{\nabla L(w(t))}_{\color{red}{\substack{\text{gradient at time-} \\ \text{averaged iterate}}}}
@@ -179,7 +191,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%" style="width: 80%; display: block; margin: 0 auto;">
-                <source src="media/rmsprop-centralflow.mp4" type="video/mp4">
+                <source src="../media/rmsprop-centralflow.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -194,7 +206,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%"">
-                <source src="media/rmsprop-predict-sigma.mp4" type="video/mp4">
+                <source src="../media/rmsprop-predict-sigma.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -206,9 +218,18 @@
         Namely, since the central flow predicts the covariance \(\Sigma(t)\) of the oscillations, it can render predictions for the time-average of the squared gradient via equation \eqref{eq:time-average-sq-gradient}.
         This prediction is quite accurate:
     </p>
-    <p class="body-text">[insert animation]</p>
+    <div class="figure">
+        <div class="video-container">
+            <video width="100%"">
+                <source src="../media/rmsprop-central-flow-sq-gradient.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">Caption.</div>
+    </div>
     <p class="body-text">
-        Interestingly, most of the squared gradient \(\nabla L(w_t)^{\odot 2} \) originates from the oscillations, i.e. the second term of \eqref{eq:time-average-sq-gradient}, rather than from the squared gradient at the time-averaged iterate.  [Show valley picture.]
+        Interestingly, most of the squared gradient \(\nabla L(w_t)^{\odot 2} \) originates from the oscillations, i.e. the second term of \eqref{eq:time-average-sq-gradient}, rather than from the squared gradient at the time-averaged iterate, i.e. the first term of \eqref{eq:time-average-sq-gradient}.
         Intuitively, if we recall that an oscillating optimization algorithm can be viewed as moving through a "valley" while bouncing between the "valley walls", then
         this means that most of the squared gradient comes from the valley walls, rather than from the valley floor.
     </p>
@@ -218,7 +239,7 @@
     <div class="figure">
         <div class="video-container">
             <video width="100%"">
-                <source src="media/rmsprop-central-flow-nu.mp4" type="video/mp4">
+                <source src="../media/rmsprop-central-flow-nu.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="video-overlay">Click to play</div>
@@ -233,13 +254,13 @@
 
     <p class="body-text">
         Let us now use the central flow to understand how RMSProp sets its preconditioner.
-        As is, the RMSProp central flow is a joint flow over both \((w, \nu)\).
-        Unfortunately, even at the edge of stability, \(\nu(t)\) is not completely determined by \(w(t)\), the way it was for Scalar RMSProp (<a href="part2.html">Part II</a>).
-        Fortunately, we will see that in some circumstances, \(\nu\) does nearly converge to a value largely determined by \(w\).
-    </p>
+        <!-- As is, the RMSProp central flow is a joint flow over both \((w, \nu)\). -->
+        Unfortunately, even at the edge of stability, \(\nu(t)\) cannot be expressed as a function of \(w(t)\), as it was for Scalar RMSProp (<a href="../part2">Part II</a>).
+        Instead, \(\nu(t)\) remains an independent variable that must be tracked.
+        Nevertheless, it turns out that, in some circumstances, \(\nu\) converges under the dynamics of RMSProp to a value that depends on the current \(w\) alone.    </p>
 
     <p class="body-text">
-        For any weights \(w\), imagine freezing \(w\) in place and running the \(\nu\) dynamics until a fixed point is reached.
+        Specifically, for any weights \(w\), imagine freezing \(w\) in place and running the \(\nu\) dynamics until a fixed point is reached.
         It turns out that for any \(w\), there is always a unique \(\nu\) satisfying the stationarity condition
         \(
         \frac{d\nu}{dt} = 0
@@ -251,18 +272,26 @@
     <p class="body-text">
         In the figure below, we measure the cosine similarity between the real EMA \(\nu(t)\) and the stationary EMA \(\overline{\nu}(w(t))\) during training by the central flow.
         You can see that the cosine similarity rises to very high values (near 1), indicating that the real EMA \(\nu(t)\) converges to the stationary EMA \(\overline{\nu}(w(t))\).
-        We also compare the real EMA \(\nu(t)\) to the stationary EMA \(\overline{\nu}(w(t))\) at a coordinate-wise level.
     </p>
 
     <div class="figure">
-        <img src="media/stationary-nu-convergence.png" style="width:90%; display: block; margin: 0 auto;" alt="Alt text">
+        <img src="../media/stationary-nu-convergence-cosine.png" style="width:50%; display: block; margin: 0 auto;" alt="Alt text">
         <div class="caption">Caption.</div>
+    </div>
+
+    <p class="body-text">
+        We can also see that the the real EMA \(\nu(t)\) agrees with the stationary EMA \(\overline{\nu}(w(t))\) at a coordinate-wise level:
+    </p>
+
+    <div class="figure">
+        <img src="../media/stationary-nu-convergence-coordinatewise.png" style="width:70%; display: block; margin: 0 auto;" alt="Alt text">
     </div>
 
     <p class="body-text">
         Intuitively, the original central flow describes the simultaneous dynamics of optimization (the \(w\) dynamics), and preconditioner adaptation (the \(\nu\) dynamics).
         That \(\nu(t)\) is converging to \(\overline{\nu}(w(t))\) implies that the \(\nu\) dynamics of preconditioner adaptation 
         are happening on a <em>faster timescale</em> than the \(w\) dynamics of optimization, so that the adaptive preconditioner is usually "all caught up" with the current weights \(w\).
+        <!-- This means that we can examine the stationary EMA \(\overline{\nu}(w)\) to reason about RMSProp's preconditioning strategy. -->
     </p>
 
     <p class="body-text">
@@ -284,7 +313,7 @@
     </p>
 
     <p class="body-text">
-        Now that we are able to articulate the preconditioner that RMSProp implicitly uses, we can interpret this preconditioner to gain some understanding
+        Now that we are able to write down the preconditioner that RMSProp implicitly uses, we can interpret this preconditioner to gain some understanding
         into RMSProp's efficacy.
         The constraint in \eqref{eq:convex-program-P} is equivalent to the stability condition \( P^{-1} H \preceq 2 I \) and hence ensures that the preconditioner keeps RMSProp locally stable.
         The first term in the objective of \eqref{eq:convex-program-P} is the trace of the preconditioner, or equivalently the sum of the inverse effective learning rates.
@@ -299,17 +328,75 @@
         \]
     </p>
     <p class="body-text">
-        The sum of the inverse effective learning rates is proportional to the <em>harmonic mean</em> of the effective learning rates, so this is equivalent to
+        The sum of the inverse effective learning rates is proportional to the <em>harmonic mean</em> of the effective learning rates, so \eqref{eq:convex-program-P-alternate} is equivalent to
         maximizing the harmonic mean of the effective learning rates while maintaining local stability.
         This is an intuitively sensible preconditioner criterion.
-        What do we want in a preconditioner?  Well, we need local stability, but we also want the effective learning rates to be as large as possible, and these two desiderata are in tension.
-        The effective learning rates are a vector, so to formulate this as an optimization problem we need a scalar-valued summary statistic, and the harmonic mean is as good a choice as any.
-        We are not suggesting that this is the optimal choice, we are saying that this is what \eqref{eq:convex-program-P-alternate} is doing, and what RMSProp  \eqref{eq:convex-program-P} is almost doing.
+        What do we want in a preconditioner?  Well, we want the effective learning rates to be as large as possible, but we also need local stability, and these two desiderata are in tension.
+        To resolve the tension, if we have some scalar-valued metric for measuring the "largeness" of the vector of effective learning rates, then we can formulate preconditioner selection as an optimization problem.
+        The harmonic mean is one such metric.
     </p>
 
     <p class="body-text">
-        Indeed, the figure below shows that the preconditioner \eqref{eq:convex-program-P-alternate} is a better preconditioner than the "baseline" of gradient descent. 
+        Indeed, the figure below shows that, along the RMSProp central flow, the preconditioner \eqref{eq:convex-program-P-alternate} beats the "baseline" 
+        of gradient descent with the largest locally stable learning rate, i.e. \(P(w) =  (2/S(w)))^{-1} I\).
+        To measure the efficacy of a preconditioner \(P\) at weights \(w\), we report the quantity \[ \| \nabla L(w) \|^2_{P^{-1}} := \nabla L(w)^T P^{-1} \nabla L(w), \]
+        which is the instantaneous rate of loss decrease under the preconditioned gradient flow with preconditioner \(P\).  Larger is better.
     </p>
     
+    <div class="figure">
+        <img src="../media/optimization-speeds-wo-stationary.png" style="width:100%; display: block; margin: 0 auto;" alt="Alt text">
+    </div>
+
+    <p class="body-text">
+        However, the second term in the objective of \eqref{eq:convex-program-P} makes matters more complicated.
+        This term is precisely the optimization speed of preconditioned gradient flow with preconditioner \(P\).
+        <em>Minimizing</em> this quantity necessarily acts to <em>slow down</em> optimization, which is bad.
+        Thus, this term is a harmful presence in RMSProp's implicit preconditioning strategy.
+        Indeed, the figure below shows that RMSProp's stationary preconditioner \eqref{eq:convex-program-P} is always worse than the first-term-only variant \eqref{eq:convex-program-P-alternate}, and is sometimes even worse than our "baseline" of gradient descent:
+    </p>
+
+    <div class="figure">
+        <img src="../media/optimization-speeds.png" style="width:100%; display: block; margin: 0 auto;" alt="Alt text">
+    </div>
+
+    <p class="body-text">
+        By substituting the stationary preconditioner \eqref{eq:convex-program-P} into the RMSProp central flow, we can obtain a <em>stationary flow</em> in terms of \(w\) alone:
+        \[
+        \begin{align}
+        \frac{dw}{dt} = - \underset{\color{red} \substack{\text{stationary} \\ \text{preconditioner}}}{\overline{P}(w)^{-1}} \odot \left[\nabla L(w) +
+         \underset{ \color{red} \text{implicit curvature penalty} }{\tfrac{1}{2} \nabla \langle \Sigma(t), H(w) \rangle}  \right] \label{eq:stationary-flow}
+        \end{align}
+        \]
+    </p>
+    <p class="body-text">
+        where \(\Sigma(t)\) is defined as the solution to an SDCP.
+        This flow assumes that the preconditioner adapts "infinitely fast" to the current weights \(w\), so that we can model it as always being fixed at its current stationary value.
+        Empirically, we find that the stationary flow \eqref{eq:stationary-flow} is less accurate than the original central flow, but is nevertheless often a decent approximation to the RMSProp trajectory, provided that 
+        RMSProp has reached the edge of stability and that the preconditioner has converged to its stationary value.
+    </p>
+    <div class="figure">
+        <div class="video-container">
+            <video width="100%"">
+                <source src="../media/rmsprop-stationary-flow.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">this is currently a CNN; should switch to the resnet.</div>
+    </div>
+    <p class="body-text">
+        As for Scalar RMSProp (<a href="../part2">Part II</a>), we find that the implicit curvature penalty is beneficial for RMSProp's efficacy as an <em>optimizer</em> (i.e. putting generalization considerations aside).
+        In particular, if we disable the central flow's implicit curvature penalty, then we find that the optimizer proceeds into higher-curvature regions in which it takes smaller steps, and optimizes slower:
+    </p>
+    <div class="figure">
+        <div class="video-container">
+            <video width="100%"">
+                <source src="../media/rmsprop-acc-via-reg.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">acceleration via regularization.</div>
+    </div>
 </body>
 </html> 

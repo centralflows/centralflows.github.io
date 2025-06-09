@@ -10,13 +10,29 @@ body {
 /* Top navigation bar */
 .top-nav {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     padding: 16px 0;
     margin-top: 32px;
     margin-bottom: 32px;
     border-top: 1px solid #e0e0e0;
     border-bottom: 1px solid #e0e0e0;
+}
+
+.top-nav-left, .top-nav-right {
+    flex: 1;
+}
+
+.top-nav-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 2;
+}
+
+.top-nav-right {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .top-nav a {
@@ -29,9 +45,17 @@ body {
     font-size: 16px;
 }
 
+.top-nav-left a, .top-nav-right a {
+    border: 1px solid #d0d0d0;
+}
+
 .top-nav a:hover {
     color: #4285f4;
     background: #f8f9fa;
+}
+
+.top-nav-left a:hover, .top-nav-right a:hover {
+    border-color: #4285f4;
 }
 
 .top-nav a.active {
@@ -233,6 +257,18 @@ ul li {
     padding: 12px;
     margin: 20px auto;
     background: white;
+    display: block;
+    text-align: center;
+    max-width: fit-content;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.companion-text {
+    border: 2px solid black;
+    padding: 12px;
+    margin: 20px auto;
+    background: #f8f8f8;
     display: block;
     text-align: center;
     max-width: fit-content;

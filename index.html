@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Understanding Optimization in Deep Learning with Central Flows</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <style>
         /* Index-specific styles */
         .authors {
@@ -54,16 +54,28 @@
 </head>
 <body>    
     <nav class="top-nav">
-        <a href="index.html" class="active">Introduction</a>
-        <span class="separator">|</span>
-        <a href="part1.html">Part I</a>
-        <span class="separator">|</span>
-        <a href="part2.html">Part II</a>
-        <span class="separator">|</span>
-        <a href="part3.html">Part III</a>
-        <span class="separator">|</span>
-        <a href="conclusion.html">Conclusion</a>
+        <div class="top-nav-left">
+            <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a>
+        </div>
+        <div class="top-nav-center">
+            <a href="../" class="active">Introduction</a>
+            <span class="separator">|</span>
+            <a href="../part1">Part I</a>
+            <span class="separator">|</span>
+            <a href="../part2">Part II</a>
+            <span class="separator">|</span>
+            <a href="../part3">Part III</a>
+            <span class="separator">|</span>
+            <a href="../conclusion">Conclusion</a>
+        </div>
+        <div class="top-nav-right">
+            <a href="https://github.com/locuslab/central_flows">💻 Code</a>
+        </div>
     </nav>
+    
+    <p class="companion-text">
+        This is the companion website for the paper <a href="https://arxiv.org/abs/2410.24206">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025.
+     </p>
 
     <h1>Understanding optimization in deep learning with central flows</h1>
 
@@ -82,10 +94,10 @@
         </div>
     </div>
 
-    <div class="links">
+    <!-- <div class="links">
         <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a>
         <a href="https://github.com/locuslab/central_flows">💻 Code</a>
-    </div>
+    </div> -->
 
     <div class="gif-container">
         <img src="https://jmcohen.github.io/images/overview.gif" alt="Central Flows Overview Animation">
@@ -93,10 +105,6 @@
     <div class="caption">
         A vision transformer is trained on a subset of CIFAR-10 using gradient descent. The central flow (black) accurately matches the trajectory of gradient descent.
     </div>
-
-    <p class="boxed-text">
-        This is the companion website for the paper <a href="https://arxiv.org/abs/2410.24206">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025.
-     </p>
 
     <p class="body-text">
         This work takes a step towards a <strong>theory of optimization in deep learning</strong>. 
@@ -116,18 +124,29 @@
     <div class="caption">
         In this cartoon, gradient descent (blue) takes an oscillatory path through weight space. The central flow (black) is a smooth curve that characterizes this trajectory.
     </div>
-
+    <p class="body-text">
+        We focus on the simple setting of deterministic (i.e. full-batch) optimization, as even this simple setting is not yet understood by existing theory. 
+        We view our analysis of deterministic optimization as a necessary stepping stone to a subsequent analysis of stochastic optimization.
+    </p>
+    <p class="body-text">
+        Although our analysis relies on informal mathematical reasoning, we hold our theory to the unusually high standard of rendering accurate numerical predictions about the optimization trajectories of real neural networks.
+    </p>
     <p class="body-text">
         This site is organized as follows (paralleling different sections of the paper):
         <ul>
             <li>
-                In <a href="part1.html">Part I</a>, we introduce the central flows framework with an analysis of <b>gradient descent</b>, the simplest optimizer.
+                In <a href="part1.html">Part I</a>, we analyze <b>gradient descent</b>, the simplest optimizer.
             </li>
-            <li> In <a href="part2.html">Part II</a>, we examine a simple adaptive optimizer, <b>Scalar RMSProp</b>.</li>
-            <li>In <a href="part3.html">Part III</a>, we analyze <b>RMSProp</b>, i.e. Adam without momentum</li>
-            <li>Finally, in the <a href="conclusion.html">Conclusion</a>, we review why central flows are a useful tool for understanding optimization in deep learning.</li>
+            <li> In <a href="part2.html">Part II</a>, we examine <b>Scalar RMSProp</b>, a simple adaptive optimizer.</li>
+            <li>In <a href="part3.html">Part III</a>, we study <b>RMSProp</b>, i.e. Adam without momentum.</li>
         </ul>
     </p>
+    <p class="body-text">
+        In the <a href="conclusion.html">Conclusion</a>, we make the case that central flows are a necessary theoretical tool for reasoning about optimization in deep learning.
+    </p>
+
+
+
 
 </body>
 </html>
