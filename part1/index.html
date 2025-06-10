@@ -47,8 +47,18 @@
     </p>
 
     <div style="text-align: center; margin: 24px 0; font-size: 20px;">
-        \[w_{t+1} = w_t - \eta \, \nabla L(w_t). \tag{gradient descent}\]  
+        \[
+        \begin{equation}
+          \begin{aligned}
+            w_{t+1} = w_t - \eta \, \nabla L(w_t)
+          \end{aligned}
+          \tag{gradient descent}
+        \end{equation}
+        \]
     </div>
+    <!-- <div style="text-align: center; margin: 24px 0; font-size: 20px;">
+        \[w_{t+1} = w_t - \eta \, \nabla L(w_t). \tag{gradient descent}\]  
+    </div> -->
 
     <p class="body-text">
         Perhaps surprisingly, traditional analyses of gradient descent cannot capture the typical dynamics of gradient descent in deep learning.  We'll first explain why, and then we'll present a new analysis of gradient descent that <em>does</em> apply in deep learning.
@@ -253,10 +263,13 @@
         <!-- <div class="caption">.</div> -->
     </div>
     <p class="body-text">
-        Practical training runs don't look exactly like this, because they use stochastic optimizers, and SGD has <a href="https://arxiv.org/abs/2412.20553">somewhat different dynamics</a>.
+        Practical training loss curves don't look exactly like this, since practical training involves stochastic optimization, and SGD has somewhat different dynamics</a>.
         (For example, exaggerated loss spikes are less common with SGD.)
-        But we have every reason to believe that you'll see these exact same dynamics if you take any standard deep learning setup, and switch the optimizer to deterministic gradient descent.
-        Since gradient descent is the simplest optimizer, we believe that we must first understand gradient descent before attempting to understand more complex optimizers such as SGD.
+        But we have every reason to believe that you'll see these exact same dynamics if you take any standard deep learning setup, and switch the optimizer to (deterministic) gradient descent.
+        Since gradient descent is the simplest optimizer (and the simplest special case of SGD), we believe that it is imperative to understand how gradient descent works in deep learning.
+    </p>
+    <p class="body-text">
+        Further, we emphasize that <a href="https://arxiv.org/abs/2412.20553">broadly similar phenomena</a> do occur during SGD, and in fact, the study of these phenomena was <a href="https://arxiv.org/abs/1807.05031">first</a> <a href="https://arxiv.org/abs/2002.09572">pioneered</a> by <a href="https://sjastrzebski.com/">Stanislaw Jastrzébski</a> in the context of SGD.
     </p>
     <p class="body-text">
         Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> which showed that gradient descent exhibits these EOS dynamics, and posed the question:
@@ -643,7 +656,7 @@
     <p class="body-text">
         OK, so we've shown that the central flow takes the same long-term path as gradient descent.
         But, one might ask, if they're the same, then why is one better?
-        Well, as a smooth curve, the central flow is a fundamentally <b>simpler</b> object than the oscillatory gradient descent trajectory.
+        Well, as a smooth curve, the central flow is a fundamentally simpler object than the oscillatory gradient descent trajectory.
         For example, under the gradient descent trajectory, the network's predictions evolve erratically, due to the oscillations:
     </p>
     <div class="figure">
@@ -786,8 +799,12 @@
     <p class="body-text">
         We are now in a position to answer the titular question: "how does gradient descent work?"
         Gradient descent takes an oscillatory path through weight space, oscillating back-and-forth along the top Hessian eigenvectors.
-        (Visually, this resembles moving through a "valley" while bouncing between the "valley walls".)
-        These oscillations often dominate the short-term dynamics of training, accounting for much of the train loss and gradient norm.
+        Visually, this resembles moving through a "valley" while bouncing between the "valley walls".
+        Because of the oscillations, the train loss behaves non-monotonically, and the network predictions (among other things) behave erratically.
+        Yet gradient descent is merely "oscillating around" a well-behaved central flow that decreases the loss monotonically.
+        
+
+        TODO we can understand the trajectory and the oscillations in a time-averaged sense
     </p>
     <p class="body-text">
         The oscillations are triggered when the curvature gets too high, and the oscillations in turn induce reduction of curvature.

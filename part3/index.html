@@ -48,7 +48,7 @@
     </p>
     <p class="body-text">
         RMSProp maintains an exponential moving average \(\nu\) of the element-wise squared gradient \(\nabla L(w)^{\odot 2}\), and then takes a step using per-coordinate step sizes of \(\eta / \sqrt{\nu}\).
-        There is an equivalent formulation that is sometimes more convenient to work with: if we define preconditioned gradient descent as: \( w_{t+1} = w_t - P^{-1} \nabla L(w_t)\),
+        There is an equivalent interpretation that is sometimes more convenient to work with: if we define preconditioned gradient descent as: \( w_{t+1} = w_t - P^{-1} \nabla L(w_t)\),
         then RMSProp is preconditioned gradient descent with the dynamic preconditioner \(P_t = \text{diag}(\sqrt{\nu_t} / \eta)\).
     </p>
     <p class="body-text">
