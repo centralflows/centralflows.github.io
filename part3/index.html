@@ -43,7 +43,7 @@
         \[
             \underset{\color{red}{\text{update EMA of squared gradient}\,\rule[18pt]{0pt}{0pt}}}
                      {\nu_{t} = \beta_{2} \, \nu_{t-1} + (1-\beta_{2}) \nabla L(w_t)^{\odot 2}}, \quad \quad
-            \underset{\color{red}{\text{take preconditioned gradient step}}}{w_{t+1} = w_t - \frac{\eta}{\sqrt{\nu_{t}} }\odot \nabla L(w_t)}. \tag{RMSProp}
+            \underset{\color{red}{\text{take preconditioned gradient step}}}{w_{t+1} = w_t - \frac{\eta}{\sqrt{\nu_{t}} }\odot \nabla L(w_t)}.
         \]
     </p>
     <p class="body-text">

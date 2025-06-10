@@ -311,4 +311,41 @@ ul li {
     h1 {
         font-size: 36px;
     }
+}
+
+@media (max-width: 900px) {
+    /* Allow the nav bar to wrap onto multiple lines */
+    .top-nav {
+        flex-wrap: wrap;
+        padding: 12px 0;
+    }
+
+    /* Stack the left + right links on their own lines for readability */
+    .top-nav-left,
+    .top-nav-right {
+        flex: 1 1 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+
+    /* Center navigation also occupies full width and can wrap */
+    .top-nav-center {
+        flex: 1 1 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 4px;
+    }
+
+    /* Reduce font size + padding so more items fit */
+    .top-nav a {
+        font-size: 14px;
+        padding: 6px 10px;
+        margin: 4px;
+    }
+
+    /* Hide the visual separators to save horizontal space */
+    .top-nav .separator {
+        display: none;
+    }
 } 

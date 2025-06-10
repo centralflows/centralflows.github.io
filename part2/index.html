@@ -58,7 +58,6 @@
     <p class="body-text">
         \[
             \underset{\color{red}{\text{maintain EMA of squared gradient norm}\rule[20pt]{0pt}{0pt}}}{\nu_{t} = \beta_2 \, \nu_t + (1-\beta_2) \|\nabla L(w_t)\|^2}, \quad \quad \underset{\color{red}{\text{take gradient step of size } \eta / \sqrt{\nu}}}{ w_{t+1} = w_t - \frac{\eta}{\sqrt{\nu_{t}}} \nabla L(w_t)}.
-            \tag{Scalar RMSProp}
         \]
     </p>
     <p class="body-text">
