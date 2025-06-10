@@ -254,9 +254,9 @@
     </div>
     <p class="body-text">
         Practical training runs don't look exactly like this, because they use stochastic optimizers, and SGD has <a href="https://arxiv.org/abs/2412.20553">somewhat different dynamics</a>.
-        (For example, exaggerated loss spikes are less common with stochastic optimizers.)
+        (For example, exaggerated loss spikes are less common with SGD.)
         But we have every reason to believe that you'll see these exact same dynamics if you take any standard deep learning setup, and switch the optimizer to deterministic gradient descent.
-        Since deterministic gradient descent is the simplest optimizer, our viewpoint is that we must first understand its behavior before moving onto more complex optimizers such as SGD.
+        Since gradient descent is the simplest optimizer, we believe that we must first understand gradient descent before attempting to understand more complex optimizers such as SGD.
     </p>
     <p class="body-text">
         Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> which showed that gradient descent exhibits these EOS dynamics, and posed the question:
@@ -546,13 +546,14 @@
         What is more interesting are the other two panes.
     </p>
     <p class="body-text">
-        The middle pane shows that our formula \eqref{eq:sigma-squared-one-unstable} for \(\sigma^2(t)\), though derived using informal mathematical reasoning, can accurately predict the instantaneous variance of the oscillations.
+        The middle pane shows that our formula \eqref{eq:sigma-squared-one-unstable} for \(\sigma^2(t)\) can accurately predict the instantaneous variance of the oscillations.
         In light blue, we show the squared magnitude of the displacement between gradient descent
         and the central flow along the top Hessian eigenvector, and in thick blue we compute the empirical time-average of this quantity, i.e. the empirical variance of the oscillations (we use Gaussian smoothing).
-        Observe that the central flow's \(\sigma^2(t)\), in black, accurately predicts the variance of the oscillations.
+        Observe that the central flow's \(\sigma^2(t)\), in black, accurately predicts this quantity.
     </p>
     <p class="body-text">
-        The right pane shows that the Euclidean distance between gradient descent and the central flow remains small over time, meaning that both processes follow the same overall path.
+        The right pane shows that the gradient descent stays close to the central flow over time.
+        In particular, it shows that the Euclidean distance between gradient descent and the central flow remains small over time.
         In contrast, the figure below shows that the distance between gradient descent and the <em>gradient flow</em> starts to grow large once training enters EOS:
     </p>
     <div class="figure" style="width: 50%; display: block; margin: 0 auto;">

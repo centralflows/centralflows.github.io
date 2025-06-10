@@ -54,7 +54,7 @@
         First, there are local convergence analyses, which describe the optimizer's behavior in the neighborhood of a minimum.
         The problem with these is that deep learning mostly does not happen in the neighborhood of a minimum.
         In many cases, training terminates before anything remotely resembling a minimum is reached.
-        Even if there are situations where training does eventually reach a minimum, the practitioner cares equally about the whole training process, and does not care disproportionately about the very last moments.
+        Even if there are situations where training does eventually reach a minimum, the practitioner cares equally about the whole training process, and does not care disproportionately about the last moments.
     </p>
     <p class="body-text">
         Second, there are global convergence analyses, which aim to prove convergence to a minimum from any initialization.
@@ -68,64 +68,38 @@
         For a practitioner training a real neural net on a real dataset, an analysis of a toy setting does not suggest anything concrete about the problem at hand.
     </p>
     <p class="body-text">
-        We hope to advance the idea that the theory of optimization for deep learning could revolve around studying the <em>local dynamics</em> of the optimizer <em>throughout training</em> &mdash; that is, the question: "how does the optimizer move around the local loss landscape?"
-        (We are certainly <a href="https://arxiv.org/abs/2009.11162">not</a> the <a href="https://arxiv.org/abs/2205.10287">first</a> to advocate for this idea.)
-        In the setting of deterministic training, what makes these local dynamics interesting are <em>oscillations</em>.
-        These oscillations emerge due to the interaction between the discrete update rule and the local loss landscape, and they induce rich dynamical behaviors.
-        Indeed, it would not be an exaggeration to say that much of the behavior of an optimization algorithm is <em>implicit</em> in its oscillatory dynamics.
-        <!-- As we've seen, without understanding these dynamics, it is not possible to understand gradient descent's mechanism of convergence, or how adaptive optimizers "adapt" to the local loss landscape. -->
-    </p>
+        In light of these limitations, we advocate for a theory of optimization that focuses on studying the <em>local dynamics</em> of the optimizer <em>throughout training</em>.
+        (Note that we are <a href="https://arxiv.org/abs/2009.11162">by no means</a> the <a href="https://arxiv.org/abs/2205.10287">first</a> to advocate for this idea.)
+        In the deterministic setting, what makes these dynamics particularly interesting are the <em>oscillations</em> that arise from the interaction between the discrete update rule and the local loss landscape.
+        These oscillations give rise to rich and often surprising behavior, which we argue is central to understanding how optimization algorithms function.    </p>
     <p class="body-text">
         Our means of analyzing the oscillatory dynamics of an optimization algorithm is to derive a <em>central flow</em> that directly models the optimizer's time-averaged, or smoothed, trajectory.
         This central flow renders <em>explicit</em> the behaviors that were previously <em>implicit</em> in the optimizer's oscillatory dynamics.
         It therefore provides a <b>strictly more informative representation</b> of the optimization algorithm than the "raw" update rule does.
     </p>
     <p class="body-text">
-        To be sure, a central flow analysis does not reveal everything we'd like to know about an optimization algorithm.
+        To be sure, a central flow analysis does not reveal everything we'd like to know about an optimization process.
         For example, our analysis does not allow us to characterize the global rate at which the training loss will decrease.
         For another example, although we say that optimizers implicitly follow a curvature-penalized gradient flow, we do not explain what such a curvature penalty means for learning.
-        We regard these (and other) important questions as open problems for deep learning theory, beyond the scope of this work.
-    </p>
-    <ul>
-        <li>
-            <p class="body-text">
-                Firstly, these local dynamics are more <em>interesting</em> than may have been assumed: we have seen that even vanilla gradient descent, the simplest optimizer, gives rise to surprisingly rich dynamics in deep learning.
-            </p>
-        </li>
-        <li>
-            <p class="body-text">
-                Second, these local dynamics are <em>important</em>: we've shown that without understanding the local dynamics, it is not possible to understand gradient descent's mechanism of convergence, nor is it possible to understand how adaptive optimizers "adapt" to the local loss landscape.
-            </p>
-        </li>
-        <li>
-        <p class="body-text">
-        Thirdly, these local dynamics are <em>generic</em>: once you look at things from the right angle, the picture looks exactly the same for any network trained on any dataset.
-        We come up with nontrivial mathematical statements that seem to apply generically in deep learning.
-        </p>
-        </li>
-    </ul>
-    <p class="body-text">
-        In the deterministic setting, which we study in this work, what makes the local dynamics interesting are <em>oscillations</em>.
-        These oscillations induce rich dynamical behaviors.
-        To analyze an optimizer, we derive a <em>central flow</em>: a smooth curve that explicitly characterizes the optimizer's time-averaged trajectory.
-        The central flow renders <em>explicit</em> various behaviors that were previously <em>implicit</em> in the optimizer's oscillatory dynamics.
     </p>
     <p class="body-text">
-        To be sure, our analysis leaves many questions unanswered.
-        For example, we show that optimizers implicitly follow a curvature-penalized gradient flow, but we do not explain what such a curvature penalty means for learning.
-        In our view, this is a concern for deep learning theory.
-        We mean to achieve a separation of concerns between "optimization theory for deep learning" and "deep learning theory".
-        Research in "optimization theory for deep learning" can be concerned with translating between discrete update rules which have implicit behaviors, and smooth flows which render such behaviors explicit.
-        Then research in  deep learning theory doesn't have to worry about discrete update rules, and can instead focus on understanding curvature-penalized gradient flows.
+        We regard these (and other) important questions as open problems for deep learning theory that are beyond the scope of the current work.
+        In fact, perhaps such questions should be regarded as outside the rightful scope of a "theory of optimization for deep learning".
+        Such a theory could focus on translating between discrete update rules which have rich implicit behaviors, and smooth flows which render such behaviors explicit.
+        Then the rest of deep learning theory could focus on understanding such smooth flows, without having to think about discrete update rules.
     </p>
+    <!-- <p class="body-text">
+        A word on mathematical rigor: we agree that 
+    </p>
+
     <p class="body-text">
         A word on mathematical rigor: all else being equal, more rigor is better.
         Indeed, we hope future work can figure out how to make our informal analysis more rigorous.
         Yet, the problem with rigor can function as a handicap. 
         Sometimes, we figure out that a thing is true long before we develop the right mathematical tooling to 
         Thus, while our work is not rigorous, it is ithe first true mechanism of convrgenmce . deep mathematical truehty. which undlir. 
-    </p>
+    </p> -->
 
-    stochastic setting
+    <!-- stochastic setting -->
 </body>
 </html> 

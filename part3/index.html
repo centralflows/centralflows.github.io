@@ -47,11 +47,9 @@
         \]
     </p>
     <p class="body-text">
-        RMSProp maintains an exponential moving average \(\nu\) of the element-wise squared gradient, and then divides the learning rate by \(\sqrt{\nu}\).
-    </p>
-    <p class="body-text">
-        You can equivalently think of RMSProp as an instance of <em>preconditioned</em> gradient descent that uses the dynamic preconditioner \(P_t := \text{diag}(\sqrt{\nu_t} / \eta)\), where we are defining 
-        preconditioned gradient descent as: \( w_{t+1} = w_t - P_t^{-1} \nabla L(w_t)\).
+        RMSProp maintains an exponential moving average \(\nu\) of the element-wise squared gradient \(\nabla L(w)^{\odot 2}\), and then takes a step using per-coordinate step sizes of \(\eta / \sqrt{\nu}\).
+        There is an equivalent formulation that is sometimes more convenient to work with: if we define preconditioned gradient descent as: \( w_{t+1} = w_t - P^{-1} \nabla L(w_t)\),
+        then RMSProp is preconditioned gradient descent with the dynamic preconditioner \(P_t = \text{diag}(\sqrt{\nu_t} / \eta)\).
     </p>
     <p class="body-text">
         <a href="https://arxiv.org/abs/1412.6980">Adam</a> uses the same preconditioning strategy, and has achieved massive success in deep learning.  However, it is a <a href="https://parameterfree.com/2020/12/06/neural-network-maybe-evolved-to-make-adam-the-best-optimize">mystery</a> why this particular preconditioner should work so well.
@@ -62,6 +60,7 @@
         In this section, we will use the central flows framework to understand RMSProp.
         We will see that RMSProp <em>does</em> adapt to the local Hessian after all &mdash; but the reason is inextricably tied to the optimizer's oscillatory dynamics, which have not been previously studied.
     </p>
+    <h2>The dynamics of RMSProp</h2>
     <p class="body-text">
         Let's start by getting some intuition for RMSProp's behavior.
         We'll train a ResNet on a subset of CIFAR-10 using deterministic RMSProp.
@@ -89,7 +88,7 @@
             </video>
             <div class="video-overlay">Click to play</div>
         </div>
-        <div class="caption">The individual entries of the squared gradient fluctuate rapidly, causing their EMA to also fluctuate.</div>
+        <div class="caption">The individual entries of the squared gradient (faint lines) fluctuate rapidly, causing their EMA (dark lines) to also fluctuate.</div>
     </div>
     <p class="body-text">
         You can see that the entries of the squared gradient \( \nabla L(w_t)^{\odot 2} \) are fluctuating rapidly.  This causes their EMA \( \nu_t \) to also fluctuate (although less so).
@@ -100,7 +99,7 @@
     </p>
     <p class="body-text">
         To understand why RMSProp would oscillate, consider running preconditioned gradient descent: \[ w_{t+1} = w_t - P^{-1} \nabla L(w_t) \] on a quadratic function with Hessian \( H \).
-        If the preconditioned Hessian \( P^{-1} H \) has any eigenvalue greater than 2, then preconditioned gradient descent will oscillate along the corresponding right eigenvector of the preconditioned Hessian, as illustrated in the animation below.
+        If the preconditioned Hessian \( P^{-1} H \) has any eigenvalue greater than 2, then preconditioned gradient descent will oscillate along the corresponding (right) eigenvector of the preconditioned Hessian, as illustrated in the animation below.
     </p>
     <div class="figure">
         <div class="video-container">
@@ -120,7 +119,7 @@
          if any eigenvalues of the <em>current</em> preconditioned Hessian \( P_t^{-1} H(w_t) = \text{diag}(\eta / \sqrt{\nu_t}) \, H(w_t) \) exceed the critical threshold 2.
     </p>
     <p class="body-text">
-        Watch how the top eigenvalues of the preconditioned Hessian evolve, under the dynamics of RMSProp:
+        Let's examine how the eigenvalues of the preconditioned Hessian evolve, under the dynamics of RMSProp:
     </p>
     <div class="figure">
         <div class="video-container">
@@ -133,17 +132,25 @@
         <div class="caption">As RMSProp trains, the top eigenvalue of the preconditioned Hessian \( \text{diag}(\eta / \sqrt{\nu}) H(w_t)\) equilibrates around the value 2.</div>
     </div>
     <p class="body-text">
-        You can see that the top eigenvalue rises to the threshold 2, at which point RMSProp enters an <em>edge of stability</em> regime where the top eigenvalue(s) equilibrate around this value.
+        Initially, all eigenvalues are below 2, and the optimizer does not oscillate.
+        Once the top eigenvalue rises to the threshold 2, RMSProp enters an <em>edge of stability</em> regime where optimizer oscillates along the unstable eigenvector(s) of the preconditioned Hessian, and such oscillations induce reduction of the corresponding eigenvalue(s).
+        The net effect is that the top eigenvalues equilibrate around the value 2.
     </p>
     <p class="body-text">
-        At the edge of stability, RMSProp oscillates along the unstable eigenvectors of the preconditioned Hessian, and such oscillations, in turn, induce reduction of the corresponding eigenvalues.
-        There are two distinct mechanisms by which oscillations along unstable eigenvectors reduce the unstable eigenvalues of the preconditioned Hessian \( P_t^{-1} H(w_t) \).
+        For RMSProp, there are two distinct mechanisms by which oscillations along the unstable eigenvectors reduce the unstable eigenvalues of the preconditioned Hessian \( P_t^{-1} H(w_t) \).
         First, such oscillations induce implicit regularization of the Hessian \(H(w_t)\), as can be seen by considering a local cubic Taylor expansion.
-        Second, they increase the gradient and hence the preconditioner \(P_t\).
+        Second, they increase the gradient (as will be made precise below) and hence the preconditioner \(P_t\).
     </p>
     <p class="body-text">
         While analyzing the exact dynamics is challenging, analyzing the <em>time-averaged</em> dynamics is much easier.
-        We will derive a central flow \(w(t)\) that models the time-averaged trajectory of RMSProp.
+        We will now derive a central flow \(w(t)\) that models the time-averaged trajectory of RMSProp.
+    </p>
+    <h2>Deriving the central flow</h2>
+    <div class="figure" style="width:30%; float: right; margin: 0 0 16px 32px;">
+        <img src="../media/divergence-illustration-flow-delta.png">
+        <div class="caption">The iterate \(w_t\) is displaced from the central flow \(w(t)\) by some perturbation \(\delta_t\)</div>
+    </div>
+    <p class="body-text">
         As in <a href="../part1">Part I</a>, we model RMSProp \(\{w_t\}\) as being displaced from the central flow \(w(t)\) by some perturbation \(\delta_t\) with covariance \(\Sigma(t)\) that lies
         within the span of the unstable eigenvectors.
         \[
@@ -169,6 +176,9 @@
         \end{align}
         \]
     </p>
+    <p class="body-text">
+        This calculation makes clear that larger oscillations (i.e. larger diagonal entries of \(\Sigma(t)\)) <em>increase</em> the squared gradient on average over time.
+    </p>
 
     <p class="body-text">
         Based on these time-averages, we make the ansatz that the time-averaged dynamics of RMSProp can be described by a central flow \((w(t), \nu(t)) \) of the following functional form:
@@ -179,9 +189,9 @@
                 \label{eq:ansatz}
             \end{align}
         \]
-        As before, to determine \(\Sigma(t)\), we impose three natutural conditions, and show that only one value of \(\Sigma(t)\) satisfies all three conditions.
+        As before, to determine \(\Sigma(t)\), we impose three natural conditions, and show that only one value of \(\Sigma(t)\) satisfies all three conditions.
         This value is the solution to a certain semidefinite complementarity problem (SDCP).
-        The RMSProp central flow is defined as equation \eqref{eq:ansatz} with this particular value of \(\Sigma(t)\).
+        The RMSProp central flow is defined as equation \eqref{eq:ansatz} with this value of \(\Sigma(t)\).
     </p>
     
     <p class="body-text">
@@ -213,10 +223,15 @@
         </div>
         <div class="caption">Each generalized eigenvalue of \(\Sigma(t)\) w.r.t the preconditioner \(P(t)\) accurately predicts the variance of the oscillations along the corresponding generalized eigenvector of \(\Sigma(t)\).</div>
     </div>
+    <h2>Interpreting the central flow</h2>
     <p class="body-text">
-        Equipped with the central flow, we can now precisely understand the dynamics of the squared gradient \(\nabla L(w_t)^{\odot 2} \) that we saw earlier.
-        Namely, since the central flow predicts the covariance \(\Sigma(t)\) of the oscillations, it can render predictions for the time-average of the squared gradient via equation \eqref{eq:time-average-sq-gradient}.
-        This prediction is quite accurate:
+        We will now use the central flow to understand how RMSProp implicitly sets its preconditioner.
+    </p>
+    <p class="body-text">
+        First, let us revisit the fluctuations in the squared gradient \(\nabla L(w_t)^{\odot 2} \) that we saw earlier.
+        These fluctuations arise due to the oscillations in weight space along the top eigenvectors of the effective Hessian.
+        Since the central flow models the covariance \(\Sigma(t)\) of these oscillations, it can render predictions for the time-average of the squared gradient, \( \mathbb{E}[\nabla L(w_t)^{\odot 2}] \),  via equation \eqref{eq:time-average-sq-gradient}.
+        As you can see, this prediction is quite accurate:
     </p>
     <div class="figure">
         <div class="video-container">
@@ -226,15 +241,18 @@
             </video>
             <div class="video-overlay">Click to play</div>
         </div>
-        <div class="caption">Caption.</div>
+        <div class="caption">Using equation \eqref{eq:time-average-sq-gradient}, the central flow can accurately predict the time-average of the squared gradient.</div>
     </div>
     <p class="body-text">
-        Interestingly, most of the squared gradient \(\nabla L(w_t)^{\odot 2} \) originates from the oscillations, i.e. the second term of \eqref{eq:time-average-sq-gradient}, rather than from the squared gradient at the time-averaged iterate, i.e. the first term of \eqref{eq:time-average-sq-gradient}.
+        Thus, while the precise fluctuations in the squared gradient may be chaotic, their time-average is predictable.
+    </p>
+    <p class="body-text">
+        Interestingly, we can see that most of the squared gradient \(\nabla L(w_t)^{\odot 2} \) originates from the oscillations, i.e. the second term of \eqref{eq:time-average-sq-gradient}, rather than from the squared gradient at the time-averaged iterate, i.e. the first term of \eqref{eq:time-average-sq-gradient}.
         Intuitively, if we recall that an oscillating optimization algorithm can be viewed as moving through a "valley" while bouncing between the "valley walls", then
         this means that most of the squared gradient comes from the valley walls, rather than from the valley floor.
     </p>
     <p class="body-text">
-        Similarly, we can see that the central flow's \(\nu(t)\) accurately tracks the long-term trajectory of RMSProp's \(\nu_t\):
+        The central flow can also accurately predict the dynamics of \(\nu\), the EMA of the squared gradient:
     </p>
     <div class="figure">
         <div class="video-container">
@@ -244,23 +262,23 @@
             </video>
             <div class="video-overlay">Click to play</div>
         </div>
-        <div class="caption">Caption.</div>
+        <div class="caption">The central flow's \(\nu(t)\) accurately models RMSProp's \(\nu_t\).</div>
     </div>
     <p class="body-text">
-        To summarize, the local quadratic structure of the objective function causes RMSProp to oscillate.
-        These oscillations dominate the squared gradient and hence largely determine \(\nu(t)\), the EMA of the squared gradient.
-        But while the oscillations are chaotic, their second moment is predictable, and this lets us accurately predict the dynamics of \(\nu(t)\).
+        In keeping with the broader story, we see that although \(\nu_t\) is fluctuating, its time-averaged trajectory \(\nu(t)\) is predictable.
     </p>
 
     <p class="body-text">
         Let us now use the central flow to understand how RMSProp sets its preconditioner.
         <!-- As is, the RMSProp central flow is a joint flow over both \((w, \nu)\). -->
-        Unfortunately, even at the edge of stability, \(\nu(t)\) cannot be expressed as a function of \(w(t)\), as it was for Scalar RMSProp (<a href="../part2">Part II</a>).
-        Instead, \(\nu(t)\) remains an independent variable that must be tracked.
-        Nevertheless, it turns out that, in some circumstances, \(\nu\) converges under the dynamics of RMSProp to a value that depends on the current \(w\) alone.    </p>
+        Unfortunately, even at the edge of stability, \(\nu(t)\) cannot always be expressed purely as a function of \(w(t)\) (as it was for Scalar RMSProp in <a href="../part2">Part II</a>), 
+        and instead remains an independent variable that must be tracked.
+        This reflects the fact that for any \(w\), there are potentially many values for \(\nu\) that could stabilize optimization, and the actual value used by RMSProp depends on the historical trajectory.
+     </p>
 
     <p class="body-text">
-        Specifically, for any weights \(w\), imagine freezing \(w\) in place and running the \(\nu\) dynamics until a fixed point is reached.
+        Nevertheless, it turns out that, in some circumstances, \(\nu\) implicitly converges under the dynamics of RMSProp to a value that depends on the current \(w\) alone.
+        For any weights \(w\), imagine freezing \(w\) in place and running the \(\nu\) dynamics until a fixed point is reached.
         It turns out that for any \(w\), there is always a unique \(\nu\) satisfying the stationarity condition
         \(
         \frac{d\nu}{dt} = 0
@@ -280,7 +298,7 @@
     </div>
 
     <p class="body-text">
-        We can also see that the the real EMA \(\nu(t)\) agrees with the stationary EMA \(\overline{\nu}(w(t))\) at a coordinate-wise level:
+        We can also see that after a bit of time, the real EMA \(\nu(t)\) starts agreeing with the stationary EMA \(\overline{\nu}(w(t))\) on a coordinate-wise level:
     </p>
 
     <div class="figure">
@@ -328,7 +346,7 @@
         \]
     </p>
     <p class="body-text">
-        The sum of the inverse effective learning rates is proportional to the <em>harmonic mean</em> of the effective learning rates, so \eqref{eq:convex-program-P-alternate} is equivalent to
+        Since the sum of the inverse effective learning rates is proportional to the <em>harmonic mean</em> of the effective learning rates, the problem \eqref{eq:convex-program-P-alternate} is equivalent to
         maximizing the harmonic mean of the effective learning rates while maintaining local stability.
         This is an intuitively sensible preconditioner criterion.
         What do we want in a preconditioner?  Well, we want the effective learning rates to be as large as possible, but we also need local stability, and these two desiderata are in tension.
@@ -398,5 +416,21 @@
         </div>
         <div class="caption">acceleration via regularization.</div>
     </div>
+    <h2>Conclusion</h2>
+    <p class="body-text">
+        To summarize, RMSProp takes an oscillatory path through weight space, oscillating along the top eigenvectors of the preconditioned Hessian.
+        These oscillations dominate the squared gradient and \(\nu\), and hence largely determine the preconditioner \( P_t = \text{diag}(\sqrt{\nu} / \eta) \).
+        Indeed, it is not an exaggeration to say that RMSProp's preconditioner is <em>implicit</em> in the algorithm's oscillatory dynamics.
+    </p>
+
+    <p class="body-text">
+        Although the oscillatory dynamics are complex and may be chaotic, the covariance of the oscillations is predictable, and this lets us solve for the time-averaged trajectory of both the weights \(w(t)\) and the EMA \(\nu(t)\).
+        Empirically, the dynamics of \(\nu(t)\) seem to be happening on a faster timescale than the dynamics of \(w(t)\), so that \(\nu(t)\) is usually located right at its fixed point for the current weights \(w(t)\).
+        Thus, we can view this fixed point as "the RMSProp preconditioner" that is implicitly used by RMSProp at weights \(w\).
+    </p>
+
+    <p class="body-text">Finally, the oscillations also induce implicit reduction of curvature, and this effect is crucial for the efficacy of RMSProp as an optimizer: 
+        implicitly regularizing curvature allows RMSProp to take larger steps later in training.
+    </p>
 </body>
 </html> 
