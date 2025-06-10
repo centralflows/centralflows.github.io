@@ -43,6 +43,7 @@ body {
     border-radius: 4px;
     transition: all 0.2s ease;
     font-size: 16px;
+    white-space: nowrap;
 }
 
 .top-nav-left a, .top-nav-right a {
@@ -311,22 +312,18 @@ ul li {
     h1 {
         font-size: 36px;
     }
+    /* Hide Paper and Code links on small screens to save space */
+    .top-nav-left,
+    .top-nav-right {
+        display: none;
+    }
 }
 
 @media (max-width: 900px) {
-    /* Allow the nav bar to wrap onto multiple lines */
-    .top-nav {
-        flex-wrap: wrap;
-        padding: 12px 0;
-    }
-
-    /* Stack the left + right links on their own lines for readability */
+    /* Hide Paper and Code links on narrow screens */
     .top-nav-left,
     .top-nav-right {
-        flex: 1 1 100%;
-        display: flex;
-        justify-content: center;
-        margin-bottom: 8px;
+        display: none !important;
     }
 
     /* Center navigation also occupies full width and can wrap */
@@ -348,4 +345,14 @@ ul li {
     .top-nav .separator {
         display: none;
     }
+
+    /* Allow nav bar itself to wrap to new line(s) if needed */
+    .top-nav {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Ensure Paper and Code stay hidden after earlier 900px block overrides */
+    /* (Already covered by 900px block, so this block is no longer needed) */
 } 
