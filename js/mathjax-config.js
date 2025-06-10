@@ -21,50 +21,51 @@ window.MathJax = {
       ready() {
         MathJax.startup.defaultReady();
         
-        // Debug: log screen width
-        console.log('Screen width:', window.innerWidth);
+        // Check if mobile and disable tags entirely
+        if (window.innerWidth <= 768) {
+          // Override the tags setting for mobile
+          MathJax.config.tex.tags = 'none';
+        }
         
-        // More comprehensive tag hiding for mobile
+        // Comprehensive tag hiding CSS
         const style = document.createElement('style');
         style.textContent = `
           @media (max-width: 768px) {
-            /* Hide various tag selectors */
-            .MathJax_ref,
+            /* Hide all possible tag variations */
+            [class*="tag"],
+            [id*="tag"],
             .mjx-tag,
             .mjx-mtag,
+            .mjx-tag-right,
+            .mjx-tag-left,
             .mjx-mlabeledtr > .mjx-mtd:last-child,
             mjx-mtag,
             mjx-tag,
             .mjx-itable .mjx-mtag,
-            .mjx-container .mjx-tag {
+            .mjx-container .mjx-tag,
+            .MathJax_ref,
+            .mjx-tag-box {
               display: none !important;
               visibility: hidden !important;
+              width: 0 !important;
+              height: 0 !important;
+              overflow: hidden !important;
             }
             
-            /* Also hide the tag number specifically */
-            .mjx-tag-right,
-            .mjx-tag-left {
-              display: none !important;
-            }
-          }
-          
-          /* Debug: add border to see what's happening */
-          @media (max-width: 768px) {
+            /* Force equations to full width without tag space */
             .mjx-container {
-              border: 1px solid red !important;
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+            
+            /* Remove any right padding that might be reserved for tags */
+            .mjx-chtml {
+              padding-right: 0 !important;
+              margin-right: 0 !important;
             }
           }
         `;
         document.head.appendChild(style);
-        
-        // Debug: check for tag elements after MathJax renders
-        setTimeout(() => {
-          const tags = document.querySelectorAll('[class*="tag"], [class*="mjx"]');
-          console.log('Found elements with tag/mjx classes:', tags.length);
-          tags.forEach((el, i) => {
-            console.log(`Element ${i}:`, el.className, el.tagName);
-          });
-        }, 2000);
       }
     }
   };
