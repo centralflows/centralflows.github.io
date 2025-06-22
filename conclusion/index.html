@@ -47,7 +47,7 @@
         A <strong>theory of optimization for deep learning</strong> would provide a <strong>language for reasoning</strong> about these questions.
     </p>
     <p class="body-text">
-        Yet, there is currently no consensus within the community on what form this theory should take.
+        Yet, there is currently no consensus on what form this theory should take.
     In classical optimization theory, there are perhaps two prevalent styles of analysis, yet neither seems well-suited for deep learning.
     </p>
     <p class="body-text">
@@ -71,22 +71,21 @@
         In light of these limitations, we advocate for a theory of optimization that focuses on studying the <em>local dynamics</em> of the optimizer <em>throughout training</em>.
         (Note that we are <a href="https://arxiv.org/abs/2009.11162">by no means</a> the <a href="https://arxiv.org/abs/2205.10287">first</a> to advocate for this idea.)
         In the deterministic setting, what makes these dynamics particularly interesting are the <em>oscillations</em> that arise from the interaction between the discrete update rule and the local loss landscape.
-        These oscillations give rise to rich and often surprising behavior, which we argue is central to understanding how optimization algorithms function.    </p>
+        Without understanding these oscillatory dynamics, it is not possible to understand the behavior of an optimizer, or the function of its hyperparameters.
     <p class="body-text">
-        Our means of analyzing the oscillatory dynamics of an optimization algorithm is to derive a <em>central flow</em> that directly models the optimizer's time-averaged, or smoothed, trajectory.
+        To understand an optimizer's oscillatory dynamics, we derive a central flow that models the time-averaged, or smoothed, trajectory of the optimizer.
         This central flow renders <em>explicit</em> the behaviors that were previously <em>implicit</em> in the optimizer's oscillatory dynamics.
-        It therefore provides a <b>strictly more informative representation</b> of the optimization algorithm than the "raw" update rule does.
     </p>
     <p class="body-text">
-        To be sure, a central flow analysis does not reveal everything we'd like to know about an optimization process.
+        To be sure, a central flow analysis does not reveal everything we'd like to know about the optimization process.
         For example, our analysis does not allow us to characterize the global rate at which the training loss will decrease.
-        For another example, although we say that optimizers implicitly follow a curvature-penalized gradient flow, we do not explain what such a curvature penalty means for learning.
+        For another example, although we show that optimizers implicitly follow a curvature-penalized gradient flow, we do not explain what such a curvature penalty means for learning.
+        These are important problems for deep learning theory that are beyond the scope of the current work.
     </p>
     <p class="body-text">
-        We regard these (and other) important questions as open problems for deep learning theory that are beyond the scope of the current work.
-        In fact, perhaps such questions should be regarded as outside the rightful scope of a "theory of optimization for deep learning".
-        Such a theory could focus on translating between discrete update rules which have rich implicit behaviors, and smooth flows which render such behaviors explicit.
-        Then the rest of deep learning theory could focus on understanding such smooth flows, without having to think about discrete update rules.
+        Yet, we argue that a central flow analysis is a <strong>necessary step</strong> towards understanding the behavior of an optimization algorithm in deep learning.
+        Because the central flow renders explicit what was previously implicit in the discrete dynamics, the central flow provides a <b>strictly more informative representation</b> of the optimization algorithm than the "raw" update rule does.
+        For example, any work 
     </p>
     <!-- <p class="body-text">
         A word on mathematical rigor: we agree that 

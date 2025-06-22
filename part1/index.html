@@ -255,14 +255,15 @@
         <!-- <div class="caption">.</div> -->
     </div>
     <p class="body-text">
-        Practical loss curves don't look quite like this, since this is deterministic gradient descent, whereas practical training involves stochastic optimization.
-        But we have every reason to believe that you'll see these same EOS dynamics if you take any standard deep learning setup, and switch the optimizer to deterministic gradient descent.
+        You might point out that practical loss curves don't look quite like this &mdash; for example, they don't usually have such exaggerated loss spikes.
+        That's because practical training involves stochastic optimization, whereas this is deterministic gradient desscent.
+        We have every reason to believe that you'll see these exact same dynamics if you take any standard deep learning setup, and switch the optimizer to deterministic gradient descent.
         <!-- Since gradient descent is the simplest optimizer, we think it is important to understand how gradient descent works. -->
     </p>
     <p class="body-text">
-        Note that <a href="https://arxiv.org/abs/2412.20553">similar phenomena</a> do occur during SGD, and in fact, the study of such phenomena was <a href="https://arxiv.org/abs/1807.05031">first</a> <a href="https://arxiv.org/abs/2002.09572">pioneered</a> by <a href="https://sjastrzebski.com/">Stanisław Jastrzębski</a> in the context of SGD.
+        <a href="https://arxiv.org/abs/2412.20553">Similar phenomena</a> do occur during stochastic optimization, and in fact, the study of related phenomena was <a href="https://arxiv.org/abs/1807.05031">first</a> <a href="https://arxiv.org/abs/2002.09572">pioneered</a> by <a href="https://sjastrzebski.com/">Stanisław Jastrzębski</a> in the context of SGD.
         For SGD, things tend to get smoothed out in such a way as to eliminate the exaggerated loss spikes, but the same underlying principles seem to apply.
-        We study gradient descent as a necessary stepping stone to understanding SGD and other practical optimizers.
+        The reason why we study gradient descent is because it is the simplest optimizer.  As such, understanding gradient descent would seem to be a necessary stepping stone to understanding SGD and other practical optimizers.
     </p>
     <p class="body-text">
         Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> which showed that gradient descent exhibits these EOS dynamics, and posed the question:
@@ -688,7 +689,7 @@
         Here's what a typical gradient descent loss curve looks like:
     </p>
     <div class="figure">
-        <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
+        <div class="video-container" style="width: 75%; display: block; margin: 0 auto;">
             <video width="100%">
                 <source src="../media/loss-raw.mp4" type="video/mp4">
                 Your browser does not support the video tag.
@@ -705,7 +706,7 @@
         In contrast, the central flow's loss curve \(L(w(t))\) is much nicer:
     </p>
     <div class="figure">
-        <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
+        <div class="video-container" style="width: 75%; display: block; margin: 0 auto;">
             <video width="100%">
                 <source src="../media/loss-central-flow.mp4" type="video/mp4">
                 Your browser does not support the video tag.
@@ -742,7 +743,7 @@
         The following animation shows that this prediction is quite accurate:
     </p>
     <div class="figure">
-        <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
+        <div class="video-container" style="width: 75%; display: block; margin: 0 auto;">
             <video width="100%">
                 <source src="../media/loss-predicted.mp4" type="video/mp4">
                 Your browser does not support the video tag.
@@ -764,7 +765,7 @@
     </p>
 
     <div class="figure">
-        <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
+        <div class="video-container" style="width: 75%; display: block; margin: 0 auto;">
             <video width="100%">
                 <source src="../media/gradient-norm.mp4" type="video/mp4">
                 Your browser does not support the video tag.

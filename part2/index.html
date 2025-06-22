@@ -44,15 +44,15 @@
         Yet, despite the ubiquity of these algorithms, many questions remain unanswered, including perhaps the most basic: what, precisely, does the optimizer adapt <em>to</em>?
     </p>
 
-    <p class="body-text">
+    <!-- <p class="body-text">
         The answer might seem obvious: "the gradient, of course!" 
         But this response masks a circularity: the recent gradients encountered during training are not fixed features of the landscape that the optimizer passively estimates.
         On the contrary, we saw at the end of <a href="../part1">Part I</a> that these gradients are heavily influenced by the optimizer's own dynamics.
         Consequently, understanding how an adaptive optimizer "adapts" requires analyzing its dynamics too.
-    </p>
+    </p> -->
 
     <p class="body-text">
-        In this section, we will study these questions in the context of a simple adaptive optimizer, termed Scalar RMSProp:
+        In this section, we will study a simple adaptive optimizer, termed Scalar RMSProp:
     </p>
 
     <p class="body-text">
@@ -63,10 +63,10 @@
     <p class="body-text">
         As its name suggests, this is a scalar-valued version of RMSProp.
         Whereas RMSProp adapts one step size for each parameter, Scalar RMSProp adapts a single global step size.
-        In particular, the algorithm maintains an exponential moving average, \(\nu_t\), of the squared gradient, and then takes gradient steps using the effective step size \(\eta / \sqrt{\nu_{t}}\).
+        In particular, the algorithm maintains an exponential moving average, \(\nu_t\), of the squared gradient norm, and then takes gradient steps using the effective step size \(\eta / \sqrt{\nu_{t}}\).
     </p>
     <p class="body-text">
-        Our analysis will clarify the precise sense in which Scalar RMSProp "adapts" its step size \(\eta / \sqrt{\nu} \) to the local loss landscape.
+        Our analysis will clarify the precise sense in which Scalar RMSProp "adapts" its effective step size \(\eta / \sqrt{\nu_t} \) to the local loss landscape.
         We will see that although the optimizer explicitly uses the <em>gradient</em>, it really adapts to the <em>curvature</em>.
         But that's not all: as we'll see, Scalar RMSProp also has a hidden mechanism for <em>shaping</em> the curvature along its trajectory, and this mechanism is crucial for the optimizer's ability to optimize quickly.
     </p>
@@ -119,7 +119,8 @@
         So long as the effective sharpness \(S_{\text{eff}}\) is less than 2, the optimizer is stable.
         But soon enough, \(S_{\text{eff}}\) rises above 2, due to growth in both the sharpness \(S(w_t)\) and the effective step size \(\eta / \sqrt{\nu_t}\).
         Once  \(S_{\text{eff}} > 2\) the optimizer starts to oscillate in weight space along the top Hessian eigenvector, causing the network's predictions to oscillate, and the gradient norm to rise.
-        Yet, such oscillations do not trigger divergence, because they in turn induce reduction in the effective sharpness (more on that momentarily), providing negative feedback which re-stabilizes the system.
+        Yet, such oscillations do not trigger divergence, because they in turn induce reduction in the effective sharpness, as we will discuss momentarily.
+        This provides negative feedback which re-stabilizes the system.
         The net result is that the effective sharpness equilibrates around the value 2, as the optimizer oscillates along the top Hessian eigenvector(s).
     </p>
 
@@ -198,7 +199,7 @@
     </p>
     <h2>Deriving the central flow</h2>
     <p class="body-text">
-        When Scalar RMSProp is stable, it approximately tracks the following differential equation, which we call the <em>stable flow</em> (see the paper for an explanation for this expression):
+        When Scalar RMSProp is stable, it approximately tracks the following differential equation, which we call the <em>stable flow</em> (see the paper for the explanation for this expression):
         \[
         \begin{align}
         \frac{dw}{dt} = -\frac{\eta}{\sqrt{\nu}} \nabla L(w), \quad \quad \frac{d \nu}{dt} = \frac{1-\beta_2}{\beta_2} \left( \|\nabla L(w)\|^2 - \nu \right). \label{eq:stable-flow}
@@ -248,7 +249,7 @@
         \]
     </p>
     <p class="body-text">
-        Based on these time-averages, we make the ansatz that the time-averaged dynamics of \(w, \nu \) can be described by a central flow \(w(t), \nu(t) \) of the following functional form:
+        Based on these time-averages, we make the ansatz that the time-averaged dynamics of \(w, \nu \) can be captured by a central flow \(w(t), \nu(t) \) of the following functional form:
         \[
         \begin{align}
             \frac{dw}{dt} = -\frac{\eta}{\sqrt{\nu}} \underbrace{\left[ \nabla L(w) + \frac{1}{2} \sigma^2(t) \nabla S(w) \right]}_{\color{red}{\text{time-averaged gradient}}},
@@ -262,10 +263,10 @@
     </p>
     <p class="body-text">
         As with gradient descent, to determine \(\sigma^2(t)\), we observe that the effective sharpness  \(S_{\text{eff}}\) equilibrates at the value 2,
-        and is consequently invariant over time.
-        Based on this, we will enforce that the time derivative of \(S_{\text{eff}}\) along the central flow be equal to zero.
+        and is consequently <em>invariant over time</em>.
+        Based on this, we will require that the time derivative of \(S_{\text{eff}}\) along the central flow should be equal to zero.
         It turns out that there is a unique value of \(\sigma^2(t)\) that is compatible with this equilibrium condition (see the paper for the formula).
-        The central flow is given by eq. \eqref{eq:ansatz} with this value of \(\sigma^2(t)\).
+        The central flow is given by eq. \eqref{eq:ansatz} with this \(\sigma^2(t)\).
     </p>
     <p class="body-text">
         The resulting flow accurately captures the complex dynamics of Scalar RMSProp that we saw earlier:
@@ -284,10 +285,11 @@
         Thus, a remarkably simple time-averaging argument has allowed us to characterize the long-term trajectory of a complex dynamical system.
     </p>
     <p class="body-text">
-        As described in the paper, this derivation can also be extended to the more general setting where an arbitrary number of eigenvalues are at EOS, including zero, in which case the central flow reduces to the stable flow eq. \eqref{eq:stable-flow}.
+        As described in the paper, this derivation can also be extended to the more general setting where an arbitrary number of eigenvalues are at EOS, including zero.
+        When there are no eigenvalues at EOS, the central flow reduces to the stable flow eq. \eqref{eq:stable-flow}.
     </p>
     <p class="body-text">
-        We show in the paper that the central flow can accurately capture the dynamics of Scalar RMSProp across a variety of deep learning settings.
+        We empirically show in the paper that this central flow can accurately capture the dynamics of Scalar RMSProp across a variety of deep learning settings.
         For example, the following figure illustrates how we can accurately predict the time-averaged loss curves:
     </p>
     <div class="figure">
@@ -325,7 +327,7 @@
         At EOS, the effective sharpness \(S_{\text{eff}} := \eta \, S(w) / \sqrt{\nu}\) stays fixed at 2.
         Since \(S_{\text{eff}}\) is the product of the effective step size \( \eta / \sqrt{\nu} \) and the sharpness \( S(w) \),
         this implies that the effective step size  \( \eta / \sqrt{\nu} \) must always be equal to \(2 / S(w)\).
-        In other words, although the sharpness \(S(w)\) is gradually changing, \(\nu\) must be changing commensurately so that the effective step size \( \eta / \sqrt{\nu} \) always stays fixed at \(2 / S(w)\):
+        In other words, although the sharpness \(S(w(t))\) is gradually changing, \(\nu(t)\) must be changing commensurately so that the effective step size \( \eta / \sqrt{\nu(t)} \) always stays fixed at \(2 / S(w(t))\):
     </p>
     <div class="figure">
         <div class="video-container">
@@ -336,12 +338,12 @@
             <div class="video-overlay">Click to play</div>
         </div>
         <div class="caption">When the central flow is at the edge of stability, the sharpness \( S(w) \) is evolving, but \(\nu \) evolves commensurately in such a way that the effective step size \( \eta / \sqrt{\nu} \) always stays equal to \(2 / S(w)\).
-           For the middle and right subplots, we plot all 3 eigenvalues that are EOS.
+           For the middle and right subplots, we plot all 3 eigenvalues that are at EOS.
         </div>
     </div>
     <p class="body-text">
         Notably, the value \(2 / S(w)\) is the <em>largest stable step size</em> for gradient descent at the location \(w\).
-        Thus, we see that Scalar RMSProp automatically keeps the effective step size set to the current largest stable step size.
+        Thus, we see that Scalar RMSProp automatically keeps the effective step size tuned to the current largest stable step size, even as this value evolves through training.
         This is the precise sense in which the algorithm is "adaptive."
     </p>
     <p class="body-text">
@@ -361,7 +363,7 @@
         So, is that all there is to it?  Should we think of Scalar RMSProp as just an efficient method for online estimation of the maximum stable step size?
         No, there is something missing from this picture: to fully understand Scalar RMSProp's behavior, we must account for the sharpness reduction effect that is induced by the oscillations.
         To quantify this effect, we can return to the central flow.
-        In general, the central flow is a joint flow over \((w, v)\).
+        In general, the central flow is a joint flow over \((w, \nu)\).
         But at EOS, because \( \eta / \sqrt{\nu(t)} = 2 / S(w(t)) \), we can eliminate \(\nu\) from the picture, and write the central flow as a flow over \(w\) alone:
     </p>
     <p class="body-text">
@@ -422,7 +424,7 @@
     <p class="body-text">
         Over time, the ablated flow navigates into regions with higher sharpness \(S(w)\) (center), because it lacks the implicit sharpness regularization that Scalar RMSProp has.
         In these sharper regions, the effective step size of \(2/S(w)\) is smaller (right), and optimization accordingly proceeds slower (left).
-        In contrast, by regularizing sharpness, Scalar RMSProp is able to steer itself into lower-sharpness regions, where it is able to take larger steps.
+        In contrast, by regularizing sharpness, Scalar RMSProp is able to steer itself into lower-sharpness regions, where it can and does take larger steps.
     </p>
 
     <p class="body-text">
@@ -453,7 +455,7 @@
     We have seen that much of the behavior of Scalar RMSProp is <em>implicit</em> in the optimizer's oscillatory dynamics.
     First, these dynamics cause the effective step size \(\eta / \sqrt{\nu}\) to automatically adapt to the value \(2/S(w)\), where \(S(w)\) is the sharpness, or maximum Hessian eigenvalue, at weights \(w\).
     Second, these dynamics induce implicit regularization of the sharpness \(S(w\)), an important effect which steers the optimizer into lower-sharpness regions in which it can take larger steps and therefore optimize faster.
-    Our central flow allows us to precisely quantify both of these effects, which is necessary if we would like to understand the behavior of the optimizer and the function of its hyperparameters.
+    Our central flow allows us to precisely quantify both of these effects, which is necessary for understanding the behavior of the optimizer and the function of its hyperparameters.
     </p>
     <p class="body-text">
         Although these complex oscillatory dynamics would be challenging to analyze in fine-grained detail, we have seen that a remarkably simple time-averaging argument allows us to characterize the time-averaged trajectory with high empirical accuracy.
