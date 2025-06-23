@@ -155,7 +155,7 @@
     </p>
     <div class="figure" style="width:30%; float: right; margin: 0 0 16px 32px;">
         <img src="../media/divergence-illustration-flow-delta.png">
-        <div class="caption">We model the iterate iterate \(w_t\) as displaced from the central flow \(w(t)\) by some oscillation \(\delta_t\)</div>
+        <div class="caption">We model the iterate \(w_t\) as displaced from the central flow \(w(t)\) by some oscillation \(\delta_t\)</div>
     </div>
     <p class="body-text">
         Upon reaching the edge of stability, RMSProp starts to oscillate, and deviates from this path.  
@@ -397,7 +397,7 @@
         Even if the Hessian were not PSD, a similar point would hold &mdash; the optimization problem eq. \eqref{eq:convex-program-P-alternate} would have the closed-form solution \( \hat{P}(w) = \tfrac{1}{2} \Pi_{\mathbb{S}_+} H(w) \), where \( \Pi_{\mathbb{S}_+} \) denotes projection onto the cone of positive semidefinite matrices.
     </p>
     <p class="body-text">
-        With the diagonal constraint present, this argument no longer holds, but we can numerically assess the efficacy of the preconditioner eq. \eqref{eq:convex-program-P-alternate} on deep learning loss functions.
+        With the diagonal constraint present, this argument no longer holds, but we can empirically assess the efficacy of the preconditioner eq. \eqref{eq:convex-program-P-alternate} on deep learning loss functions.
         To quantify the efficacy of a preconditioner \(P\) at weights \(w\), we can measure the quantity \( \| \nabla L(w) \|^2_{P^{-1}} := \nabla L(w)^T P^{-1} \nabla L(w) \), which is the instantaneous rate of loss decrease
         under the preconditioned gradient flow.
         A natural "baseline" preconditioner is the one corresponding to vanilla gradient descent with the maximum locally stable learning rate, i.e. \(P(w) =  (2/S(w))^{-1} I\), where \(S(w)\) is the largest Hessian eigenvalue at \(w\).

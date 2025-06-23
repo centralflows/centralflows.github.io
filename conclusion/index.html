@@ -68,7 +68,7 @@
         For a practitioner training a real neural net on a real dataset, an analysis of a toy setting does not suggest anything concrete about the problem at hand.
     </p>
     <p class="body-text">
-        In light of these limitations, we advocate for a theory of optimization that focuses on studying the <em>local dynamics</em> of the optimizer <em>throughout training</em>.
+        In light of these limitations, we advocate studying the <em>local dynamics</em> of the optimizer <em>throughout training</em>.
         (Note that we are <a href="https://arxiv.org/abs/2009.11162">by no means</a> the <a href="https://arxiv.org/abs/2205.10287">first</a> to advocate for this idea.)
         In the deterministic setting, what makes these dynamics particularly interesting are the <em>oscillations</em> that arise from the interaction between the discrete update rule and the local loss landscape.
         Without understanding these oscillatory dynamics, it is not possible to understand the behavior of an optimizer, or the function of its hyperparameters.
@@ -84,14 +84,14 @@
     </p>
     <p class="body-text">
         Yet, we argue that a central flow analysis is a <strong>necessary step</strong> towards understanding the behavior of an optimization algorithm in deep learning.
-        Because the central flow renders explicit what was previously implicit in the discrete dynamics, the central flow provides a <b>strictly more informative representation</b> of the optimization algorithm than the "raw" update rule does.
-        For example, any work 
+        The central flow provides a <b>strictly more informative representation</b> of the optimization algorithm than the "raw" update rule does.
+        Put in other words, we think that any future work on understanding the optimizers that we have studied here (including gradient descent and RMSProp) would need either use the result of our analysis, or would need to effectively re-do our analysis.
     </p>
-    <!-- <p class="body-text">
-        A word on mathematical rigor: we agree that 
+    <p class="body-text">
+        Thus, we are optimistic that central flows can constitute one brick in the larger edifice of a theory of deep learning.
     </p>
 
-    <p class="body-text">
+    <!-- <p class="body-text">
         A word on mathematical rigor: all else being equal, more rigor is better.
         Indeed, we hope future work can figure out how to make our informal analysis more rigorous.
         Yet, the problem with rigor can function as a handicap. 
