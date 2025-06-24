@@ -259,6 +259,9 @@
         </div>
         <div class="caption">Each generalized eigenvalue of \(\Sigma(t)\) w.r.t the preconditioner \(P(t)\) accurately predicts the variance of the oscillations along the corresponding generalized eigenvector of \(\Sigma(t)\).</div>
     </div>
+    <p class="body-text">
+        Thus, while the exact oscillations may be chaotic and hard to analyze, their time-average is predictable and comparably easy to analyze.
+    </p>
     <h2>Interpreting the central flow</h2>
     <p class="body-text">
         We will now use the central flow to understand how RMSProp implicitly sets its preconditioner.
@@ -397,7 +400,7 @@
         Even if the Hessian were not PSD, a similar point would hold &mdash; the optimization problem eq. \eqref{eq:convex-program-P-alternate} would have the closed-form solution \( \hat{P}(w) = \tfrac{1}{2} \Pi_{\mathbb{S}_+} H(w) \), where \( \Pi_{\mathbb{S}_+} \) denotes projection onto the cone of positive semidefinite matrices.
     </p>
     <p class="body-text">
-        With the diagonal constraint present, this argument no longer holds, but we can empirically assess the efficacy of the preconditioner eq. \eqref{eq:convex-program-P-alternate} on deep learning loss functions.
+        With the diagonal constraint present, this argument no longer applies, but we can empirically assess the efficacy of the preconditioner eq. \eqref{eq:convex-program-P-alternate} on deep learning loss functions.
         To quantify the efficacy of a preconditioner \(P\) at weights \(w\), we can measure the quantity \( \| \nabla L(w) \|^2_{P^{-1}} := \nabla L(w)^T P^{-1} \nabla L(w) \), which is the instantaneous rate of loss decrease
         under the preconditioned gradient flow.
         A natural "baseline" preconditioner is the one corresponding to vanilla gradient descent with the maximum locally stable learning rate, i.e. \(P(w) =  (2/S(w))^{-1} I\), where \(S(w)\) is the largest Hessian eigenvalue at \(w\).
@@ -495,7 +498,7 @@
     </p>
 
     <p class="companion-text">
-        If you find this work interesting, consider applying to do a PhD with Alex Damian, who will join the MIT Math and EECS departments in Fall 2026.
+        Interested in this line of work?  Consider pursuing a PhD with <a href="https://web.math.princeton.edu/~ad27/">Alex Damian</a>, who will join the MIT Math and EECS departments in Fall 2026.
      </p>
 </body>
 </html> 

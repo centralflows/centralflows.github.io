@@ -91,7 +91,7 @@
     <p class="body-text">
         Starting around step 90, the gradient norm starts to spike regularly, and the network's predictions start to oscillate.
         What happened?
-        Scalar RMSProp has entered an oscillatory <em>edge of stability</em> regime.
+        Scalar RMSProp has entered an oscillatory <em>edge of stability</em> regime:
     </p>
     <p class="body-text">
         To understand why Scalar RMSProp oscillates, recall from <a href="../part1">Part I</a> that gradient descent with step size \(\eta\) oscillates along the top Hessian eigenvector(s) if the sharpness \(S(w)\) exceeds the threshold \(2/\eta\).
@@ -118,12 +118,35 @@
     <p class="body-text">
         So long as the effective sharpness \(S_{\text{eff}}\) is less than 2, the optimizer is stable.
         But soon enough, \(S_{\text{eff}}\) rises above 2, due to growth in both the sharpness \(S(w_t)\) and the effective step size \(\eta / \sqrt{\nu_t}\).
-        Once  \(S_{\text{eff}} > 2\) the optimizer starts to oscillate in weight space along the top Hessian eigenvector, causing the network's predictions to oscillate, and the gradient norm to rise.
-        Yet, such oscillations do not trigger divergence, because they in turn induce reduction in the effective sharpness, as we will discuss momentarily.
-        This provides negative feedback which re-stabilizes the system.
-        The net result is that the effective sharpness equilibrates around the value 2, as the optimizer oscillates along the top Hessian eigenvector(s).
+        Once  \(S_{\text{eff}} > 2\) the optimizer starts to oscillate in weight space along the top Hessian eigenvector.
+        Visually, such oscillations can be visualized as "bouncing up the walls" of a valley:
     </p>
-
+    <div class="figure">
+        <img src="../media/valley-grow.png" style="width:30%; display: block; margin: 0 auto;" alt="Alt text">
+        <div class="caption">
+            When \(S_{\text{eff}} > 2\), Scalar RMSProp "bounces up the walls" of the valley.
+        </div> 
+    </div> 
+    <p class="body-text">
+        These oscillations cause the network's predictions to oscillate, and the gradient norm to rise.
+        Yet, the oscillations do not trigger divergence, because they induce reduction in the effective sharpness, as we will discuss momentarily.
+        This negative feedback re-stabilizes the system, causing the oscillations to shrink.
+     </p>
+     <div class="figure">
+        <img src="../media/valley-grow-shrink.png" style="width:30%; display: block; margin: 0 auto;" alt="Alt text">
+        <div class="caption">
+            Once \(S_{\text{eff}} < 2\), Scalar RMSProp "oscillates back down" the valley.
+        </div> 
+    </div> 
+     <p class="body-text">
+        The net result is that the effective sharpness equilibrates around the value 2, as the optimizer oscillates without diverging along the top Hessian eigenvector(s).
+        We refer to this regime as training at the <em>edge of stability</em>.
+     </p>
+    <!-- <div class="figure">
+        <img src="../media/valley-noflow.png" style="width:30%; display: block; margin: 0 auto;" alt="Alt text">
+        <div class="caption">At the edge of stability, Scalar RMSProp oscillates along the top Hessian eigenvector(s).  This can be visualized as moving through a "valley" by bouncing between the "valley walls."
+        </div> 
+    </div>  -->
     <p class="body-text">
         For Scalar RMSProp, there are two separate mechanisms by which oscillations induce reduction of the effective sharpness \(S_{\text{eff}}\).
         First, as with gradient descent, oscillations automatically trigger reduction of sharpness \(S(w_t)\), decreasing \(S_{\text{eff}}\) via its numerator.
@@ -265,7 +288,7 @@
         As with gradient descent, to determine \(\sigma^2(t)\), we observe that the effective sharpness  \(S_{\text{eff}}\) equilibrates at the value 2,
         and is consequently <em>invariant over time</em>.
         Based on this, we will require that the time derivative of \(S_{\text{eff}}\) along the central flow should be equal to zero.
-        It turns out that there is a unique value of \(\sigma^2(t)\) that is compatible with this equilibrium condition (see the paper for the formula).
+        It turns out that there is a unique value of \(\sigma^2(t)\) that is compatible with this equilibrium condition (the formula is in the paper).
         The central flow is given by eq. \eqref{eq:ansatz} with this \(\sigma^2(t)\).
     </p>
     <p class="body-text">
@@ -343,7 +366,7 @@
     </div>
     <p class="body-text">
         Notably, the value \(2 / S(w)\) is the <em>largest stable step size</em> for gradient descent at the location \(w\).
-        Thus, we see that Scalar RMSProp automatically keeps the effective step size tuned to the current largest stable step size, even as this value evolves through training.
+        Thus, we see that Scalar RMSProp automatically keeps the effective step size tuned to the largest stable step size, even as this value evolves through training.
         This is the precise sense in which the algorithm is "adaptive."
     </p>
     <p class="body-text">
@@ -355,15 +378,15 @@
     </p>
     <p class="body-text">
         Further, note that even comprehending this step size strategy requires an appeal to some notion of time averaging.
-        The effective step size of Scalar RMSProp is not <em>exactly</em> fixed at \(2/S(w)\), but rather fluctuates around this value.
-        The important thing is that it is \(2/S(w)\) <em>on average over time</em>.
+        The effective step size of Scalar RMSProp is not <em>exactly</em> fixed at \(2/S(w(t))\), but rather fluctuates around this value.
+        The important thing is that it is \(2/S(w(t))\) <em>on average over time</em>.
         The central flow perspective allows us to reason about this behavior.
     </p>
     <p class="body-text">
         So, is that all there is to it?  Should we think of Scalar RMSProp as just an efficient method for online estimation of the maximum stable step size?
         No, there is something missing from this picture: to fully understand Scalar RMSProp's behavior, we must account for the sharpness reduction effect that is induced by the oscillations.
         To quantify this effect, we can return to the central flow.
-        In general, the central flow is a joint flow over \((w, \nu)\).
+        In general, the central flow is a joint flow over \((w(t), \nu(t))\).
         But at EOS, because \( \eta / \sqrt{\nu(t)} = 2 / S(w(t)) \), we can eliminate \(\nu\) from the picture, and write the central flow as a flow over \(w\) alone:
     </p>
     <p class="body-text">
@@ -453,19 +476,22 @@
     <h2>Conclusion</h2>
     <p class="body-text">
     We have seen that much of the behavior of Scalar RMSProp is <em>implicit</em> in the optimizer's oscillatory dynamics.
-    First, these dynamics cause the effective step size \(\eta / \sqrt{\nu}\) to automatically adapt to the value \(2/S(w)\), where \(S(w)\) is the sharpness, or maximum Hessian eigenvalue, at weights \(w\).
-    Second, these dynamics induce implicit regularization of the sharpness \(S(w\)), an important effect which steers the optimizer into lower-sharpness regions in which it can take larger steps and therefore optimize faster.
-    Our central flow allows us to precisely quantify both of these effects, which is necessary for understanding the behavior of the optimizer and the function of its hyperparameters.
+    First, these oscillations cause the effective step size \(\eta / \sqrt{\nu}\) to automatically adapt to the value \(2/S(w)\), where \(S(w)\) is the sharpness, or maximum Hessian eigenvalue, at weights \(w\).
+    Thus, an optimizer that only accesses the loss via <em>gradients</em> is able to adapt to the local <em>Hessian</em> with no computational overhead.
     </p>
     <p class="body-text">
-        Although these complex oscillatory dynamics would be challenging to analyze in fine-grained detail, we have seen that a remarkably simple time-averaging argument allows us to characterize the time-averaged trajectory with high empirical accuracy.
+        Second, these oscillations induce an implicit effect on the trajectory which can be precisely captured as implicit regularization of sharpness \(S(w)\) .
+        This effect allows the optimizer to implicitly steer itself into lower-sharpness regions in which it can take larger steps and therefore optimize faster.
+    </p>
+    <p class="body-text">
+        Although these complex oscillatory dynamics would be challenging to analyze in fine-grained detail, we have seen that a remarkably simple time-averaging argument allows us to characterize the <em>time-averaged</em> trajectory with high empirical accuracy.
         Thus, Part II further drives home the message from <a href="../part1">Part I</a> that time-averaging is "unreasonably effective" for understanding the oscillatory dynamics of deep learning optimizers.
      </p>
      <p class="body-text">
         In <a href="../part3">Part III</a>, we will analyze full (i.e. coordinate-wise) RMSProp, and we will see that the principles uncovered here extend there as well. 
      </p>
      <p class="companion-text">
-        If you find this work interesting, consider applying to do a PhD with Alex Damian, who will join the MIT Math and EECS departments in Fall 2026.
+        Interested in this line of work?  Consider pursuing a PhD with <a href="https://web.math.princeton.edu/~ad27/">Alex Damian</a>, who will join the MIT Math and EECS departments in Fall 2026.
      </p>
 
 </html> 
