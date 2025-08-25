@@ -14,7 +14,8 @@
 <body>
     <nav class="top-nav">
         <div class="top-nav-left">
-            <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a>
+            <a href="../central-flows-draft.pdf">📄 Paper</a>
+            <!-- <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a> -->
         </div>
         <div class="top-nav-center">
             <a href="../">Introduction</a>
@@ -24,8 +25,8 @@
             <a href="../part2">Part II</a>
             <span class="separator">|</span>
             <a href="../part3" class="active">Part III</a>
-            <span class="separator">|</span>
-            <a href="../conclusion">Conclusion</a>
+            <!-- <span class="separator">|</span>
+            <a href="../conclusion">Conclusion</a> -->
         </div>
         <div class="top-nav-right">
             <a href="https://github.com/locuslab/central_flows">💻 Code</a>
@@ -33,7 +34,8 @@
     </nav>
 
     <p class="companion-text">
-        This is the companion website for the paper <a href="https://arxiv.org/abs/2410.24206">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025.
+        This is the companion website for the paper <a href="../central-flows-draft.pdf">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025.
+        <!-- This is the companion website for the paper <a href="https://arxiv.org/abs/2410.24206">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025. -->
      </p>
 
     <h1>Part III: how does RMSProp work?</h1>
@@ -480,7 +482,36 @@
         Thus, in this limit, the learning rate hyperparameter \(\eta\) has no direct effect on the stationary preconditioner, and only affects the stationary flow via the curvature regularization term.
         But, as with Scalar RMSProp (<a href="../part2">Part II</a>), this can give \(\eta\) an <em>indirect</em> effect on the preconditioner later in training.
     </p>
-    <h2>Conclusion</h2>
+    <!-- <h2>Conclusion</h2>
+
+    <p class="body-text">
+        Adam and RMSProp defy intuition from traditional optimization theory.
+        Whereas a good preconditioner is supposed to adapt to the local <em>curvature</em> (i.e. Hessian), these optimizers instead update their preconditioner using the squared <em>gradient</em>.
+        Motivated by this apparent disconnect between theory and practice, many works have tried to dethrone Adam by designing optimizers that explicitly use Hessian information.
+        Yet these Hessian-aware approaches have fallen by the wayside over time, while Adam remains popular with practitioners.
+    </p>
+
+    <p class="body-text">
+        Our analysis takes a step towards explaining this state of affairs.
+        We have shown that RMSProp (i.e. the simplest special case of Adam) <em>does</em> adapt to the local Hessian after all &mdash; but the reason is inextricably tied to the algorithm's oscillatory dynamics, which haven't been previously studied.
+        In short, the local quadratic structure of the loss function drives RMSProp to oscillate.
+        These oscillations cause the gradient to implicitly pick up Hessian information.
+        Although the precise dynamics are challenging to analyze and are likely chaotic, the covariance of the oscillations is predictable, and therefore so is the induced preconditioner, which we make explicit as eq. \eqref{eq:convex-program-P}.
+    </p>
+    <p class="body-text">
+        Thus, for the first time, we now understand arguably the most basic aspects of RMSProp's behavior.
+        We think that this knowledge is probably a prerequisite for comprehending other aspects of RMSProp's (and Adam's) behavior.
+        Moreover, our analysis suggests two principles that one should keep in mind when designing new optimizers.
+    </p>
+    <p class="body-text">
+        Thus, we see that an algorithm that only accesses the loss via <em>gradients</em> is able to implicitly adapt to the local Hessian.
+        (While Quasi-Newton methods are broadly similar in spirit, the details are all different.)
+        Notably, RMSProp does not need to compute any Hessian-vector products; it has no computational overhead beyond gradient descent.
+    </p>
+
+
+
+    
     <p class="body-text">
         To summarize, RMSProp takes an oscillatory path through weight space, oscillating along the top eigenvectors of the effective Hessian.
         These oscillations dominate the squared gradient and \(\nu\), and hence largely determine the preconditioner \( P_t = \text{diag}(\sqrt{\nu} / \eta) \).
@@ -495,7 +526,7 @@
 
     <p class="body-text">Finally, the oscillations also induce implicit reduction of curvature, and this effect is crucial for the efficacy of RMSProp as an optimizer: 
         implicitly regularizing curvature allows RMSProp to take larger steps later in training.
-    </p>
+    </p> -->
 
     <p class="companion-text">
         Interested in this line of work?  Consider pursuing a PhD with <a href="https://web.math.princeton.edu/~ad27/">Alex Damian</a>, who will join the MIT Math and EECS departments in Fall 2026.

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conclusion: why central flows?</title>
+    <title>Towards a theory of optimization for deep learning</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../styles.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -36,64 +36,101 @@
         This is the companion website for the paper <a href="https://arxiv.org/abs/2410.24206">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025.
      </p>
 
-    <h1>Conclusion: why central flows?</h1>
+    <!-- <h1>Conclusion: why central flows?</h1> -->
+    <h1>Towards a theory of optimization for deep learning</h1>
 
     <p class="body-text">
         Optimization is a core component of deep learning.
         <!-- Regardless of whether you're pre-training a large Transformer to predict the next token, "fine-tuning" this Transformer to become an assistant, or training a diffusion model, you are running an iterative optimization algorithm, -->
         If you are doing deep learning, you are running an iterative optimization algorithm,
-        and there are certain optimization-related concerns that always come up:
-        What does the learning rate do, and how should I set it?  Why is my gradient behaving like that? Why does one optimizer work better than another on a given task?  How can we build a better optimizer?
-        A <strong>theory of optimization for deep learning</strong> would provide a <strong>language for reasoning</strong> about these questions.
+        and there are certain optimization-related concerns that always come up.
+        What does the learning rate do, and how should I set it?
+        Why is my gradient behaving like that?
+        Why does one optimizer work better than another on a given task? 
+        <!-- How can we build a better optimizer? -->
     </p>
     <p class="body-text">
-        Yet, there is currently no consensus on what form this theory should take.
-    In classical optimization theory, there are perhaps two prevalent styles of analysis, yet neither seems well-suited for deep learning.
+        A <strong>theory of optimization for deep learning</strong> would provide a <strong>language for reasoning</strong> about these kinds of questions.
     </p>
     <p class="body-text">
-        First, there are local convergence analyses, which describe the optimizer's behavior in the neighborhood of a minimum.
-        The problem with these is that deep learning mostly does not happen in the neighborhood of a minimum.
-        In many cases, training terminates before anything remotely resembling a minimum is reached.
-        Even if there are situations where training does eventually reach a minimum, the practitioner cares equally about the whole training process, and does not care disproportionately about the last moments.
+        Some may wonder whether such a theory is even possible.
+        Perhaps deep learning loss landscapes are like the Wild West &mdash; too irregular, too poorly behaved to be amenable to mathematical analysis.
+        These fears seem justified by some scary pictures that have appeared in the literature:
+    </p>
+    <div class="figure">
+        <div style="display: flex; justify-content: center; gap: 10%; align-items: center;">
+            <img src="../media/scary1.png" style="width:40%;" alt="First scary picture">
+            <img src="../media/scary2.png" style="width:30%;" alt="Second scary picture">
+        </div>
+        <div class="caption">Some pictures of deep learning loss landscapes that have appeared in the literature (<a href="https://arxiv.org/abs/1211.5063">here</a> and <a href="https://arxiv.org/abs/1712.09913">here</a>).</div>
+    </div>
+
+    <!-- <p class="body-text">
+        Based off these pictures, one might conclude that there is no assumptions that can be made about deep learning loss functions, and consequently that there is no meaningful theory that can be done.
+    </p> -->
+    <p class="body-text">
+        Fortunately, our results suggest that practical deep learning loss landscapes aren't so scary after all.
+        On the contrary, the loss landscapes themselves seem to be quite simple (at least, within the vicinity of the optimization trajectory); it's the <em>oscillatory dynamics</em> of the optimizer that are complex.
+    </p>
+    <div class="figure">
+        <img src="../media/valley-grow-shrink.png" style="width:30%; display: block; margin: 0 auto;" alt="Alt text">
+        <div class="caption">
+            Optimization algorithms undergo complex oscillatory dynamics when the local curvature is large relative to the learning rate.
+        </div> 
+    </div> 
+    <p class="body-text">
+        For example, suppose you witnessed the following loss curve for gradient descent:
+    </p>
+    <div class="figure">
+        <div class="video-container" style="width: 40%; display: block; margin: 0 auto;">
+            <video width="100%">
+                <source src="../media/loss-spike.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">The loss suddenly starts to go up.</div>
+    </div>
+    <p class="body-text">
+        A priori, you might have thought that we suddenly got unlucky and ran into some kind of gradient cliff, like a pothole in the road.
+        But if you read <a href="../part1">Part I</a>, then you know that nothing here was unexpected: the sharpness grew steadily until it passed the threshold \(2/\eta\), at which point the dynamics along
+        the top eigenvector direction switched from being contractive to being explosive, triggering exponentially growing oscillations along that direction.
     </p>
     <p class="body-text">
-        Second, there are global convergence analyses, which aim to prove convergence to a minimum from any initialization.
-        The problem with these is that, for real networks on real problems, nobody knows how to meaningfully characterize the rate of convergence of any optimizer.
-        If we can't meaningfully characterize the rate for any single optimizer, then we can't meaningfully compare two optimizers by comparing their respective rates.
-        <!-- It's possible that global convergence analyses only make sense in the context of convex optimization. -->
+        Similarly, suppose that you measured the coordinate-wise squared gradients under RMSProp, and observed the following dynamics:
+    </p>
+    <div class="figure">
+        <div class="video-container">
+            <video width="100%"">
+                <source src="../media/rmsprop-discrete-nu.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">Click to play</div>
+        </div>
+        <div class="caption">The individual entries of the squared gradient (faint lines) fluctuate rapidly, causing their EMA (dark lines) to also fluctuate.</div>
+    </div>
+    <p class="body-text">
+        A priori, you might have thought that this objective is a poorly-behaved function where the gradient changes erratically on a dime.
+        But if you read <a href="../part3">Part III</a>, then you know that these fluctuations in the gradient arise because the optimizer is oscillating along the top eigenvectors of the effective Hessian.
+        <!-- and that we understand this behavior well enough to accurately predict the time-averages of all involved quantities. -->
     </p>
     <p class="body-text">
-        Another idea is to analyze optimization in "toy" settings, where the model and the dataset are simple enough for analysis to be tractable.
-        But while meaningful results can often be proven about the toy model, it is never clear if or how such results would generalize to practical settings.
-        For a practitioner training a real neural net on a real dataset, an analysis of a toy setting does not suggest anything concrete about the problem at hand.
+        While these oscillatory dynamics are complex, our results make clear that we <em>can</em> understand them after all.
+        While our theory is not rigorous, it lets us make accurate numerical predictions on real neural networks, leaving no doubt that we do understand much of what is going on.
     </p>
     <p class="body-text">
-        In light of these limitations, we advocate studying the <em>local dynamics</em> of the optimizer <em>throughout training</em>.
-        (Note that we are <a href="https://arxiv.org/abs/2009.11162">by no means</a> the <a href="https://arxiv.org/abs/2205.10287">first</a> to advocate for this idea.)
-        In the deterministic setting, what makes these dynamics particularly interesting are the <em>oscillations</em> that arise from the interaction between the discrete update rule and the local loss landscape.
-        Without understanding these oscillatory dynamics, it is not possible to understand the behavior of an optimizer, or the function of its hyperparameters.
-    <p class="body-text">
-        To understand an optimizer's oscillatory dynamics, we derive a central flow that models the time-averaged, or smoothed, trajectory of the optimizer.
-        This central flow renders <em>explicit</em> the behaviors that were previously <em>implicit</em> in the optimizer's oscillatory dynamics.
-    </p>
-    <p class="body-text">
-        To be sure, a central flow analysis does not reveal everything we'd like to know about the optimization process.
+        To be sure, our analysis does not reveal everything we'd like to know about the optimization process.
         For example, our analysis does not allow us to characterize the global rate at which the training loss will decrease.
         For another example, although we show that optimizers implicitly follow a curvature-penalized gradient flow, we do not explain what such a curvature penalty means for learning.
         These are important problems for deep learning theory that are beyond the scope of the current work.
     </p>
     <p class="body-text">
-        Yet, we argue that a central flow analysis is a <strong>necessary step</strong> towards understanding the behavior of an optimization algorithm in deep learning.
-        The central flow provides a <b>strictly more informative representation</b> of the optimization algorithm than the "raw" update rule does.
-        Put in other words, we think that any future work on understanding the optimizers that we have studied here (including gradient descent and RMSProp) would need either use the result of our analysis, or would need to effectively re-do our analysis.
+        Nevertheless, we think that a central flow analysis is a <strong>necessary step</strong> towards understanding the behavior of an optimization algorithm in deep learning.
+        The central flow renders explicit the behaviors that are implicit in the oscillatory dynamics of the discrete algorithm.
+        It thereby provides a <b>strictly more informative representation</b> of the optimization algorithm than the "raw" update rule does.
+        Thus, we are optimistic that such analyses can constitute one brick in the larger edifice of a theory of deep learning.
     </p>
-    <p class="body-text">
-        Thus, we are optimistic that central flows can constitute one brick in the larger edifice of a theory of deep learning.
-    </p>
-    <p class="companion-text">
-        Interested in this line of work?  Consider pursuing a PhD with <a href="https://web.math.princeton.edu/~ad27/">Alex Damian</a>, who will join the MIT Math and EECS departments in Fall 2026.
-     </p>
-
+   
     <!-- <p class="body-text">
         A word on mathematical rigor: all else being equal, more rigor is better.
         Indeed, we hope future work can figure out how to make our informal analysis more rigorous.

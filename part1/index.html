@@ -14,7 +14,8 @@
 <body>
     <nav class="top-nav">
         <div class="top-nav-left">
-            <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a>
+            <a href="../central-flows-draft.pdf">📄 Paper</a>
+            <!-- <a href="https://arxiv.org/abs/2410.24206">📄 Paper</a> -->
         </div>
         <div class="top-nav-center">
             <a href="../">Introduction</a>
@@ -24,8 +25,8 @@
             <a href="../part2">Part II</a>
             <span class="separator">|</span>
             <a href="../part3">Part III</a>
-            <span class="separator">|</span>
-            <a href="../conclusion">Conclusion</a>
+            <!-- <span class="separator">|</span>
+            <a href="../conclusion">Conclusion</a> -->
         </div>
         <div class="top-nav-right">
             <a href="https://github.com/locuslab/central_flows">💻 Code</a>
@@ -33,7 +34,8 @@
     </nav>
 
     <p class="companion-text">
-        This is the companion website for the paper <a href="https://arxiv.org/abs/2410.24206">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025.
+        This is the companion website for the paper <a href="../central-flows-draft.pdf">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025.
+        <!-- This is the companion website for the paper <a href="https://arxiv.org/abs/2410.24206">Understanding Optimization in Deep Learning with Central Flows</a>, published at ICLR 2025. -->
      </p>
 
     <h1>Part I: how does gradient descent work?</h1>
@@ -255,15 +257,10 @@
         <!-- <div class="caption">.</div> -->
     </div>
     <p class="body-text">
-        You might point out that practical loss curves don't look quite like this &mdash; for example, they don't usually have such exaggerated loss spikes.
-        That's because practical training involves stochastic optimization, whereas this is deterministic gradient desscent.
-        We have every reason to believe that you'll see these exact same dynamics if you take any standard deep learning setup, and switch the optimizer to deterministic gradient descent.
-        <!-- Since gradient descent is the simplest optimizer, we think it is important to understand how gradient descent works. -->
-    </p>
-    <p class="body-text">
-        <a href="https://arxiv.org/abs/2412.20553">Similar phenomena</a> do occur during stochastic optimization, and in fact, the study of related phenomena was <a href="https://arxiv.org/abs/1807.05031">first</a> <a href="https://arxiv.org/abs/2002.09572">pioneered</a> by <a href="https://sjastrzebski.com/">Stanisław Jastrzębski</a> in the context of SGD.
-        For SGD, things tend to get smoothed out in such a way as to eliminate the exaggerated loss spikes, but the same underlying principles seem to apply.
-        The reason why we study gradient descent is because it is the simplest optimizer.  As such, understanding gradient descent would seem to be a necessary stepping stone to understanding SGD and other practical optimizers.
+        Now, practical loss curves don't look quite like this &mdash; for example, they don't usually have such exaggerated loss spikes.
+        That's because practical training usually uses stochastic optimization, whereas this is deterministic gradient descent.
+        We study gradient descent because, as the simplest optimizer, understanding gradient descent would seem to be a necessary stepping stone to understanding SGD.
+        <a href="https://arxiv.org/abs/2412.20553">Similar phenomena</a> do occur during SGD and in fact, the study of related phenomena was <a href="https://arxiv.org/abs/1807.05031">first</a> <a href="https://arxiv.org/abs/2002.09572">pioneered</a> by <a href="https://sjastrzebski.com/">Stanisław Jastrzębski</a> in the context of SGD.
     </p>
     <p class="body-text">
         Several years ago, one of us (Jeremy) wrote a <a href="https://arxiv.org/abs/2103.00065">paper</a> which showed that gradient descent exhibits these EOS dynamics, and posed the question:
@@ -794,7 +791,7 @@
     <p class="body-text">
         Please see the paper for a discussion of the circumstances under which the central flow is a good approximation to gradient descent.
     </p>
-    <h2>Conclusion</h2>
+    <!-- <h2>Conclusion</h2>
     <p class="body-text">
         We are now in a position to answer the titular question: "how does gradient descent work?"
         Gradient descent takes an oscillatory path through weight space, following some macroscopic path while oscillating back-and-forth along the highest-curvature directions.
@@ -807,7 +804,7 @@
         Because of the oscillations, the exact gradient descent trajectory is hard to understand.
         For example, the network predictions behave erratically, and the train loss curve behaves non-monotonically.
         In contrast, the time-averaged trajectory is much easier to understand: along this time-averaged trajectory, the network predictions evolve smoothly, and the train loss curve decreases monotonically.
-        <!-- The oscillations are generated when the curvature exceeds \(2/\eta\), and they do not trigger divergence because they automatically steer gradient descent into a less-sharp region. -->
+        The oscillations are generated when the curvature exceeds \(2/\eta\), and they do not trigger divergence because they automatically steer gradient descent into a less-sharp region.
     </p>
     <p class="body-text">
         This time-averaged trajectory can be captured by a differential equation called the <em>central flow</em>.
@@ -815,7 +812,7 @@
     </p>
     <p class="body-text">
         Key to this is that the oscillations only seem to affect this time-averaged trajectory via their covariance, and there is only one covariance that is compatible with the observed EOS dynamics. 
-    </p>
+    </p> -->
     <p class="companion-text">
         Interested in this line of work?  Consider pursuing a PhD with <a href="https://web.math.princeton.edu/~ad27/">Alex Damian</a>, who will join the MIT Math and EECS departments in Fall 2026.
      </p>
